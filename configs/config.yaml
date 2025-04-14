@@ -1,0 +1,23 @@
+runner_id: dl_stpp
+
+mlflow:
+  experiment_name: "STPP_Benchmark"
+  run_name: "Run1"
+  
+
+model_config:
+  model_id: DummySTPP
+  learning_rate: 0.001
+  input_dim: 10
+  hidden_dim: 20
+  output_dim: 1
+
+datamodule:
+  batch_size: 32
+  input_dim: 10
+
+trainer:
+  max_epochs: 10
+  accelerator: "cpu"  # Use 'gpu' if available
+
+output_dir: "./outputs"
