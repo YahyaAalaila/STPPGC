@@ -40,7 +40,16 @@ python train.py -m hydra/launcher=joblib model=jumpcnf,selfattn,jumpgmm
 
 ## Framework and roadmap
 
-Below is the framework we are building for this package.
+Below is the framework we are building for this package as text and in a graphic.
+Classes to implement:
+
+* [ ] [Dataset](https://github.com/YahyaAalaila/STPPGC/issues/11) -- Data used for model training and testing 
+* [ ] [Resampling](https://github.com/YahyaAalaila/STPPGC/issues/5) -- Methods for data splitting, holds rows/columns to slice
+* [ ] [Measure](https://github.com/YahyaAalaila/STPPGC/issues/16) -- Losses for model evaluation
+* [ ] [Estimator](https://github.com/YahyaAalaila/STPPGC/issues/2) -- Algorithms with train/test procedures (PyTorch + Lightning)
+* [ ] [ParameterSet](https://github.com/YahyaAalaila/STPPGC/issues/12) -- Hyperparameter configurations in a readable format
+* [ ] [Performance](https://github.com/YahyaAalaila/STPPGC/issues/17) -- Results from benchmark experiments for onward analysis
+
 Rectangular nodes represent base classes with the colours indicating implementation progress:
 
 - Green = Complete
@@ -68,32 +77,33 @@ flowchart TD
 
     subgraph Data Preparation
         A[Dataset] --Select strategy--> B[Resampling]
-        B --> C[Outer Training Data]
-        B --> D[Outer Testing Data]
+        B --Outer training data--> C[Dataset]
+        B --Outer testing data--> D[Dataset]
     end
 
     subgraph Model Training
         C --Nested Resampling--> E[Resampling]
-        E --K-1 folds for training--> F[Nested Training Data]
-        E --Kth fold for testing--> G[Nested Test Data]
+        E --K-1 folds for training--> F[Dataset]
+        E --Kth fold for testing--> G[Dataset]
 
-        F --Split into train and validate--> I[Nested Validation Data]
-        F --Split into train and validate--> Y[Nested Pure Training Data]
+        F --Split into pure training data--> I[Dataset]
+        F --Split into validation data--> Y[Dataset]
 
         K[Measure] --For early stopping etc.--> J
 
         L[Measure] --For HPO--> M[(Ray Tune)]
         G --Evaluate each HP config--> M
         J[Estimator] --Configured model for HPO--> M
-        N[/Hyperparameter Config/] --Define HPO space--> M
+        N[/Hyperparameter Config/] --Define HPO space--> AA[ParameterSet]
+        AA --> M
         Y --> M
         I --> M
 
         M --Returns optimal HP config--> Q[ParameterSet]
 
         Q --Tuned esimator--> S[Estimator]
-        C --Train best model on complete outer K-1 folds--> Z[Outer Pure Training Data]
-        C --> T[Outer Validation Data]
+        C --Train best model on complete outer K-1 folds--> Z[Dataset]
+        C --Split validation data--> T[Dataset]
         T --> S
         Z --> S
 
@@ -114,5 +124,5 @@ flowchart TD
     %% class done
     class M,N external
     class J,S,U progress
-    class A,B,C,D,E,F,G,H,I,K,L,O,P,Q,R,T,V,W,X,Y,Z todo
+    class A,B,C,D,E,F,G,H,I,K,L,O,P,Q,R,T,V,W,X,Y,Z,AA todo
 ```
