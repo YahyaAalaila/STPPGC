@@ -1,9 +1,9 @@
 
 from abc import abstractmethod
-from uttils.registrable import Registrable
+from utils.registrable import Registrable
 
 
-class HyperTunner(Registrable):
+class HyperTuner(Registrable):
     """
     Base class for hyperparameter tuning.
     """
@@ -16,7 +16,7 @@ class HyperTunner(Registrable):
         """
         Build a hyperparameter tuning object from the configuration.
         """
-        hpo_class = HyperTunner.by_name(hpo_config.hpo_id)
+        hpo_class = HyperTuner.by_name(hpo_config.hpo_id)
         if hpo_class is None:
             raise ValueError(f"HPO ID '{hpo_config.hpo_id}' not recognized.")
         return hpo_class(hpo_config)

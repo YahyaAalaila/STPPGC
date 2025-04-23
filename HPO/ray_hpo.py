@@ -6,7 +6,7 @@ import pytorch_lightning as pl
 from ray import tune
 from ray.tune import CLIReporter
 from ray.tune.schedulers import ASHAScheduler
-from ray.tune.integration.pythorch_lightning import TuneReportCallback
+from ray.tune.integration.pytorch_lightning import TuneReportCallback
 
 # File: ray_tune_runner.py
 from .base_hyper_tune import BaseHyperTune
