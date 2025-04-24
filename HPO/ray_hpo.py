@@ -1,5 +1,3 @@
-
-
 import mlflow
 from config_factory.model_config import ModelConfig
 from .hpo_base import HyperTunner
@@ -65,7 +63,6 @@ class RayTuneRunner(BaseHyperTune):
             
             runner.trainer.callbacks.append(TuneReportCallback({"val_loss": "val_loss"}))
             runner.run()
-
 
     def run(self):
         # Define trainable for Ray Tune
