@@ -15,7 +15,7 @@ class BaseSTPPModule(pl.LightningModule, ABC):
         self.save_hyperparameters(logger = config)
 
     @staticmethod
-    def generate_model_from_config(model_config):
+    def build_model_from_config(model_config):
         """
         Generates a model from the given configuration.
         This method should be overridden in subclasses to create specific models.
