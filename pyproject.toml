@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]   # build the project
+build-backend = "setuptools.build_meta"  
+
+[project]  # -- Project ID --
+name = "lightning-stpp"  
+version = "0.0.1"
+description = "Glue Code -- Benchmarks for DL-based spatiotemporal point processes" # Initial description
+readme = "README.md"
+requires-python = ">=3.9"
+
+# Dependencies -- This will probably grow with new methods
+dependencies = [
+    "torch>=2.2.0",
+    "pytorch-lightning>=2.2.0",
+    "ray[tune]>=2.9.0"
+]
+
+
+[project.optional-dependencies] # -- extras installed on demand [names]
+# started with neuralstpp
+neural = [
+  # Pulls from my fork with proper build-system info
+  "neural_stpp @ git+https://github.com/YahyaAalaila/neural_stpp.git@main#egg=neural_stpp"
+]
+
+# one line per Estimator (formally adapter)
+[project.entry-points."lightning_stpp.estimators"]
+neural = "lightning_stpp.models.neural:NeuralSTPPAdapter"
+
+
+# ─── Tell setuptools to find packages under src/ ─────────────────────
+[tool.setuptools.packages.find]
+where    = ["src"]
+include  = ["lightning_stpp", "lightning_stpp.*"]

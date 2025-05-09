@@ -1,0 +1,59 @@
+# --- RUNNER --------------------------------------------------------------
+runner_id: dl_stpp
+
+# --- DATA -----------------------------------------------------------------
+data:
+  dataset_name : citibike
+  path         : ./data/citibike
+  batch_size   : 128
+  max_events   : 1024
+
+# --- MODEL ---------------------------------------------------------------
+model:
+    model_id          : "jump-cnf"  # or "att-cnf", "cond_gmm"
+    dim               :  2
+    hdims              : [64, 64, 64]
+    tpp_hidden_dims   : [8, 20]
+    actfn             :  "softplus"
+    tpp_cond          :  False
+    tpp_style         : "split"
+    tpp_actfn         : "softplus"
+    share_hidden      :  False
+    solve_reverse     :  False
+    l2_attn           :  False
+    tol               :  1e-6
+    otreg_strength    :  0.0
+    tpp_otreg_strength:  0.0
+    layer_type        :  "concat"
+    naive_hutch       :  False
+    lowvar_trace      :  False
+    search_space      : 
+      lr: {loguniform: [1e-5, 1e-2]}
+      #add more
+      
+
+# --- TRAINER -------------------------------------------------------------
+trainer:
+  gpus         : 1
+  max_epochs   : 30
+  precision    : "16-mixed"
+  seed         : 123
+  ckpt_dir     : ./checkpoints/citibike_sweep
+  save_top_k   : 1
+  monitor      : val_loss
+  resume_path  : null
+
+# --- LOGGING -------------------------------------------------------------
+logging:
+  mlflow_uri      : file:./mlruns
+  experiment_name : citibike_neural_sweep
+  run_name        : sweep_parent
+
+# --- HPO -----------------------------------------------------------------
+hpo:
+  tuner_id        : ray_tune
+  num_trials      : 40
+  scheduler       : asha
+  resources       : {cpu: 4, gpu: 1}
+  results_dir     : ./ray_results/citibike_neural
+  experiment_name : citibike_neural_sweep
