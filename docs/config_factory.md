@@ -1,5 +1,4 @@
 flowchart TB
-
 %% Benchmark layer
 subgraph BENCHMARK["benchmark.yaml"]
     A0[BenchmarkConfig]
