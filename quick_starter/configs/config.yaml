@@ -1,0 +1,41 @@
+# --- RUNNER --------------------------------------------------------------
+runner_id: dl_stpp                     # <— selects BaseRunner.register("dl_stpp")
+
+# --- DATA -----------------------------------------------------------------
+data:
+  dataset_name : citibike
+  path         : ./data/citibike/
+  batch_size   : 128
+  max_events   : 1024
+  input_dim    : 2
+
+# --- MODEL ---------------------------------------------------------------
+model:
+  algorithm    : NeuralSTPP
+  hidden_size  : 128
+  num_layers   : 2
+  dropout      : 0.1
+  lr           : 1e-3
+
+# --- TRAINER -------------------------------------------------------------
+trainer:
+  gpus         : 1
+  max_epochs   : 50
+  log_every_n_steps: 100
+  check_val_every_n_epochs: 1
+  precision    : "16-mixed"
+  seed         : 42
+  ckpt_dir     : ./checkpoints/citibike_neural
+  save_top_k   : 3
+  monitor      : val_loss
+  resume_path  : null
+  extra_callbacks:
+    - class_path: callbacks.common.test_scheduler.TestSchedulerCallback
+    - init_args:
+        test_every_n_epochs: 5
+
+# --- LOGGING -------------------------------------------------------------
+logging:
+  mlflow_uri      : file:./mlruns
+  experiment_name : citibike_neural_v1
+  run_name        : run_fixed

@@ -1,0 +1,155 @@
+# configs/benchmark_neural.yaml
+
+# ---- one dataset for the whole benchmark  ---------------------------------------------------
+# dataset:
+#   dataset_name : citibike
+#   path         : ./data/citibike/
+#   batch_size   : 128
+#   input_dim    : 2     
+dataset: pinwheel      
+n_workers: 6
+seed: 123
+logging :
+  mlflow_uri  : "file:mlruns"
+  experiment_name : Neural-STPP-Bench
+# ---- global defaults ---------------------------------------------------
+hpo_defaults:
+  hpo_id: ray_tune
+  num_trials: 2
+  scheduler: asha
+  #max_t    : 10
+  search_algorithm: random
+  resources: {cpu: 4, gpu: 1}
+
+# ---- per-model experiments ---------------------------------------------------
+experiments:
+   - runner_id: dl_stpp          # ← which runner subclass -- at the moment, it is the only runner implemented, but I am keeping it in case we want to add another one in the future
+     data: {name: ""}
+
+     model:
+        model_id          : "jump-cnf"  # or "att-cnf", "cond_gmm"
+        model_config      : "neuralstpp"
+        dim               :  2
+        hdims              : [64, 64, 64]
+        tpp_hidden_dims   : [8, 20]
+        actfn             :  "softplus"
+        tpp_cond          :  False
+        tpp_style         : "split"
+        tpp_actfn         : "softplus"
+        share_hidden      :  False
+        solve_reverse     :  False
+        l2_attn           :  False
+        tol               :  1e-6
+        otreg_strength    :  0.0
+        tpp_otreg_strength:  0.0
+        layer_type        :  "concat"
+        naive_hutch       :  False
+        lowvar_trace      :  False
+        search_space      : 
+          lr: {loguniform: [1e-5, 1e-2]}
+
+        warmup_itrs       : 2
+        num_iterations    : 10
+        momentum          : 0.9
+        weight_decay      : 0.0
+        gradclip          : 1.0
+        max_events        : 100
+
+     trainer :
+        gpus        : 1
+        max_epochs  : 2
+        precision   : "16"
+        ckpt_dir    : ckpts/jump
+
+
+
+   #   hpo :
+   #      hpo_id      : ray_tune
+   #      num_trial   : 2
+   #      scheduler   : asha
+   #      resources   : {cpu: 4, gpu: 1}
+
+  # ─────────────────────────────────────────────────────────────
+   - runner_id: dl_stpp
+     
+     model:
+        model_id          : "att-cnf"  # or "att-cnf", "cond_gmm"
+        model_config      : "neuralstpp"
+        dim               :  2
+        hdims              : [64, 64, 64]
+        tpp_hidden_dims   : [8, 20]
+        actfn             :  "softplus"
+        tpp_cond          :  False
+        tpp_style         : "split"
+        tpp_actfn         : "softplus"
+        share_hidden      :  False
+        solve_reverse     :  False
+        l2_attn           :  False
+        tol               :  1e-6
+        otreg_strength    :  0.0
+        tpp_otreg_strength:  0.0
+        layer_type        :  "concat"
+        naive_hutch       :  False
+        lowvar_trace      :  False
+        search_space      : 
+          lr: {loguniform: [1e-5, 1e-2]}
+
+        warmup_itrs       : 5
+        num_iterations    : 10
+        momentum          : 0.9
+        weight_decay      : 0.0
+        gradclip          : 1.0
+        max_events        : 100
+
+     trainer :
+        gpus : 1
+        max_epochs : 2
+        precision  : "32"
+        ckpt_dir   : ckpts/att
+
+
+     #hpo : null                 # run once with fixed hyper-params
+
+  # ─────────────────────────────────────────────────────────────
+   - runner_id: dl_stpp
+     
+     model:
+        model_id          : "cond-gmm"  # or "att-cnf", "cond_gmm"
+        model_config      : "neuralstpp"
+        dim               :  2
+        hdims              : [64, 64, 64]
+        tpp_hidden_dims   : [8, 20]
+        actfn             :  "softplus"
+        tpp_cond          :  False
+        tpp_style         : "split"
+        tpp_actfn         : "softplus"
+        share_hidden      :  False
+        solve_reverse     :  False
+        l2_attn           :  False
+        tol               :  1e-6
+        otreg_strength    :  0.0
+        tpp_otreg_strength:  0.0
+        layer_type        :  "concat"
+        naive_hutch       :  False
+        lowvar_trace      :  False
+        search_space      : 
+          lr: {loguniform: [1e-5, 1e-2]}
+
+        warmup_itrs       : 2
+        num_iterations    : 10
+        momentum          : 0.9
+        weight_decay      : 0.0
+        gradclip          : 1.0
+        max_events        : 100
+
+     trainer :
+        gpus : 1
+        max_epochs : 2
+        precision  : "32"
+
+
+    #  hpo :
+    #     hpo_id     : ray_tune
+    #     num_trial  : 20
+    #     scheduler  : asha
+    #     resources  : {cpu: 4, gpu: 1}
