@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/YourOrg/GlueCode/feature/first-prototype-2/docs/stpplogo.png" alt="GlueCode Logo" width="120"/>
+  <img src="https://raw.githubusercontent.com/YourOrg/GlueCode/feature/lightning_stppv0.0.1/docs/stpplogo.png" alt="GlueCode Logo" width="120"/>
   <h1 align="center">BenchSTPP</h1>
   <p align="center">
     <strong>A flexible, Hydra-powered benchmarking toolkit for streaming Spatio-Temporal Point Process models</strong>
