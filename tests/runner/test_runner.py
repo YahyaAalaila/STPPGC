@@ -68,27 +68,27 @@ import pytest
 def _patch_env(monkeypatch):
     # 1) create the top-level fake package
 
-    fake_pl = ModuleType("pytorch_lightning")
+    fake_pl = ModuleType("lightning")
     # stub out LightningModule
     fake_pl.LightningModule = type("LightningModule", (), {})
 
     # 2) create the loggers submodule
-    loggers_mod = ModuleType("pytorch_lightning.loggers")
+    loggers_mod = ModuleType("lightning.loggers")
     class MLFlowLogger:
         def __init__(self, *args, **kwargs):
             pass
     loggers_mod.MLFlowLogger = MLFlowLogger
 
     # 3) inject both into sys.modules
-    sys.modules["pytorch_lightning"] = fake_pl
-    sys.modules["pytorch_lightning.loggers"] = loggers_mod
+    sys.modules["lightning"] = fake_pl
+    sys.modules["lightning.loggers"] = loggers_mod
     # also attach the submodule to the parent
     fake_pl.loggers = loggers_mod
 
     yield
 
     # optional cleanup
-    for mod in ["pytorch_lightning.loggers", "pytorch_lightning"]:
+    for mod in ["lightning.loggers", "lightning"]:
         sys.modules.pop(mod, None)
 
 # --------------------------------------------------------------------------- 

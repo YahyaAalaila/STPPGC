@@ -1,5 +1,4 @@
 from lightning.pytorch.callbacks import Callback
-
 class TestSchedulerCallback(Callback):
     """
     Runs full test evaluation every `every_n_epochs` epochs during training.

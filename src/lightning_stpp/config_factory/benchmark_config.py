@@ -5,7 +5,7 @@ from dataclasses import dataclass, field, replace
 from pathlib     import Path
 from typing      import List
 
-import pytorch_lightning as pl
+import lightning as pl
 
 from ._config          import Config
 from .runner_config import RunnerConfig

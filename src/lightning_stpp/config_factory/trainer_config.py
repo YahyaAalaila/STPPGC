@@ -3,15 +3,15 @@ from dataclasses import dataclass, field
 import logging
 from pathlib import Path
 from typing import Any, List, Dict
-import pytorch_lightning as pl
+import lightning as pl
 
-
+import torch
 from lightning.pytorch.callbacks import ModelCheckpoint
 from ._config import Config
 from lightning_stpp.callbacks.common.train_logger import TrainLoggerCallback
 from lightning_stpp.callbacks.common.validation_scheduler import ValidationSchedulerCallback
 from lightning_stpp.callbacks.common.test_scheduler import TestSchedulerCallback 
-
+from ray.tune.integration.pytorch_lightning import TuneReportCheckpointCallback
 
 
 @Config.register("trainer_config")
@@ -20,6 +20,7 @@ class TrainerConfig(Config):
     gpus       : int = 1
     max_epochs : int = 50
     precision  : str = "32"
+    accelerator : str = "gpu" # "cpu", "gpu", "mps"
     seed       : int = 42
     ckpt_dir   : str = "./checkpoints"
     save_top_k : int = 1
@@ -35,20 +36,26 @@ class TrainerConfig(Config):
             raise ValueError("Number of GPUs must be non-negative.")
         if self.max_epochs <= 0:
             raise ValueError("Number of epochs must be positive.")
-        if self.precision not in ["16", "32"]:
+        if self.precision not in [16, 32]:
             raise ValueError("Precision must be '16' or '32'.")
         if self.seed < 0:
             raise ValueError("Seed must be non-negative.")
+        if self.accelerator in ("gpu", "cuda"):
+            if not torch.cuda.is_available():
+                raise ValueError("Requested CUDA but it is not available.")
+        if self.accelerator == "mps":
+            if not torch.backends.mps.is_available():
+                raise ValueError("Requested Apple-MPS but it is not available.")
         
     def _resolve_ckpt_path(self) -> str | None:
-        if not self.resume_path:
+        if not self.resume_from:
             return None
-        path = Path(self.resume_path)
+        path = Path(self.resume_from)
         if path.is_file():
             logging.info(f"Resuming from checkpoint  ➜  {path}")
             return str(path)
         raise FileNotFoundError(
-            f"resume_path '{path}' not found. "
+            f"resume_from '{path}' not found. "
             "Either correct the path or remove the field to start fresh."
         )
 
@@ -59,6 +66,7 @@ class TrainerConfig(Config):
             ModelCheckpoint(dirpath= self.ckpt_dir, save_top_k  = self.save_top_k, monitor = self.monitor),
             TrainLoggerCallback(log_every_n_steps=self.log_every_n_steps),
             ValidationSchedulerCallback(every_n_epochs=self.check_val_every_n_epochs),
+            TuneReportCheckpointCallback({"val_loss": "val_loss"}, on="validation_epoch_end")
             #TestSchedulerCallback(),
         ]
         # Create custom callbacks if any
@@ -77,26 +85,26 @@ class TrainerConfig(Config):
         return {}
 
     def build_pl_trainer(self, logger, extra_callbacks = None, model_speciofic_callbacks = None):
-        # build ModelCheckpoint callback
-        #ckpt_cb = self._model_checkpoint()
+
         # Add custom callbacks if any
         all_callbacks = self._build_custom_callbacks(extra_callbacks, model_speciofic_callbacks)
+
+        print(" ----- > All callbacks: ", all_callbacks)
         return pl.Trainer(
             max_epochs=self.max_epochs,
-            accelerator="gpu" if self.gpus > 0 else "cpu",
+            accelerator=self.accelerator,
             devices=self.gpus if self.gpus > 0 else 1,
-            precision=self.precision,
+            precision=32, #self.precision,
             logger=logger,
-            callbacks=[all_callbacks],
-            enable_checkpointing=True,
-            ckpt_path = self._resolve_ckpt_path(), # Decide whether to resume training or not (if checkpoint exists, it will be used. Otherwise, training will start from scratch.
-        )
+            callbacks=all_callbacks,
+            enable_checkpointing=True
+            )
         
     @staticmethod
     def _locate_class(class_path: str):
         """
         Dynamically import a class given its full python path.
-        e.g. "pytorch_lightning.callbacks.EarlyStopping"
+        e.g. "lightning.callbacks.EarlyStopping"
         """
         module_path, cls_name = class_path.rsplit(".", 1)
         mod = __import__(module_path, fromlist=[cls_name])

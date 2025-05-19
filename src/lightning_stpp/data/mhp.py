@@ -29,7 +29,7 @@ class MHP:
         n0 = np.random.choice(np.arange(self.dim),
                               1,
                               p=(self.mu / Istar))
-        self.data.append([s, n0])
+        self.data.append([s, int(n0)])
 
         # value of \lambda(t_k) where k is most recent event
         # starts with just the base rate
@@ -68,7 +68,7 @@ class MHP:
                 return self.data
 
             if n0 < self.dim:
-                self.data.append([s, n0])
+                self.data.append([s, int(n0)])
                 # update lastrates
                 lastrates = rates.copy()
             else:
