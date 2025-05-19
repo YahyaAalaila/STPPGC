@@ -1,60 +1,153 @@
-# STPP Glue Code
+<p align="center">
+  <img src="https://raw.githubusercontent.com/YourOrg/GlueCode/feature/first-prototype-2/docs/stpplogo.png" alt="GlueCode Logo" width="120"/>
+  <h1 align="center">BenchSTPP</h1>
+  <p align="center">
+    <strong>A flexible, Hydra-powered benchmarking toolkit for streaming Spatio-Temporal Point Process models</strong>
+  </p>
 
-This repository provides a **glue code** framework for experimenting with Spatiotemporal Point Process (STPP) methods, at the momemnt only two frameworks are included: **NeuralSTPP** and **DeepSTPP** (with deepstpp not tested yet). It centralizes data loading, configuration, and training/evaluation scripts so you can easily switch or combine these methods.
+  <!-- Badges -->
+  <p align="center">
+    <a href="https://pypi.org/project/gluecode/"><img src="https://img.shields.io/pypi/v/gluecode.svg" alt="PyPI version"></a>
+      <a href="https://github.com/YahyaAalaila/STPPGC/commits/main">
+    <img src="https://img.shields.io/github/last-commit/YahyaAalaila/STPPGC.svg"
+         alt="Last commit">
+    <a href="https://img.shields.io/github/actions/workflow/status/YourOrg/GlueCode/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/YourOrg/GlueCode/ci.yml" alt="CI Status"></a>
+     <a href="https://github.com/YahyaAalaila/STPPGC/issues">
+    <img src="https://img.shields.io/github/issues/YahyaAalaila/STPPGC.svg"
+         alt="Open issues">
+  </a>
+    <a href="https://img.shields.io/badge/license-Apache%202.0-blue.svg"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
+  </p>
+</p>
 
-## Contents
+---
+<p align="center">
+  <!-- Python version -->
+  <a href="https://www.python.org/doc/versions/">
+    <img
+      src="https://img.shields.io/badge/python-3.9%2B-blue?logo=python"
+      alt="Python 3.9+"/>
+  </a>
+  <!-- PyTorch -->
+  <a href="https://pytorch.org/">
+    <img
+      src="https://img.shields.io/badge/pytorch-2.2%2B-orange?logo=pytorch"
+      alt="PyTorch"/>
+  </a>
+  <!-- PyTorch Lightning -->
+  <a href="https://www.pytorchlightning.ai/">
+    <img
+      src="https://img.shields.io/badge/lightning-2.2%2B-790ee7?logo=PyTorch-Lightning"
+      alt="PyTorch Lightning"/>
+  </a>
+  <!-- Ray Tune -->
+  <a href="https://docs.ray.io/en/latest/tune/index.html">
+    <img
+      src="https://img.shields.io/badge/ray__tune-2.9%2B-yellow?logo=ray"
+      alt="Ray Tune"/>
+  </a>
+</p>
 
-- **configs/**: YAML configuration files (Hydra/OmegaConf) for specifying hyperparameters, data paths, logging settings, etc.
-- **data/**, **data_generators/**, **data_loader/**: Scripts for data preprocessing, normalization, and loader utilities (YA: This will be updated entirely to have an abstraction of its own, it will have different DGPs and different pattern complexity assessments)
-- **lib/**: Contains cloned repositories or integrated code for (YA: These where cloned cloned):
-  - **neural_stpp/** (Facebook Research’s NeuralSTPP).
-  - **deepstpp/** (Rose-STL-Lab’s DeepSTPP).
-  - **my_utils/**: Utility modules (e.g., logging wrappers, config helpers).
-- **runner/**: Runners (e.g., `NeuralSTPPRunner`, `DeepSTPPRunner`) to orchestrate training pipelines (YA: in the next version, this will be only one file -if possible-)
-- **scripts/**: Additional scripts for tasks like model conversion, debugging, or dataset visualization.
-- **stpp_models/**: Adapters/wrappers that unify the different STPP approaches under a common interface (e.g., `NeuralSTPPAdapter`, `DeepSTPPAdapter`).
-- **mlruns/**, **outputs/**: Byproducts of experiment tracking (MLflow) and Hydra’s output directories.
-- **train.py**: Entry point for running training/evaluation with Hydra.
+## 📖 Overview
 
-## Run
+**BenchSTPP** is an easy-to-use, highly-configurable framework for
+
+- 🔄 **Benchmarking** streaming Spatio-Temporal Point Process (STPP) models in parallel  
+- ⚙️ **Config management** via  [![Hydra][hydra-badge]][hydra]  
+- 📊 **Logging & tracking** via [![MLflow][mlflow-badge]][mlflow]  
+- 🚀 **Distributed tuning** via [![Ray Tune][raytune-badge]][raytune]
+
+...
+
+[hydra]:     https://hydra.cc/  
+[mlflow]:    https://mlflow.org/  
+[raytune]:   https://docs.ray.io/en/latest/tune/index.html  
+
+[hydra-badge]:   https://img.shields.io/badge/Hydra-1.3-blue?logo=hydra&logoColor=white  
+[mlflow-badge]:  https://img.shields.io/badge/MLflow-1.38-orange?logo=mlflow&logoColor=white  
+[raytune-badge]: https://img.shields.io/badge/Ray_Tune-2.9-yellow?logo=ray&logoColor=white  
+
+
+
+Designed for researchers and practitioners who want:  
+> “**One config → many runs**, fully reproducible, effortlessly parallel.”  
+
+---
+
+## 🔗 Table of Contents
+
+| [News](#news) | [Features](#features) | [Installation](#installation) | [Quick Start](#quick-start) | [Usage](#usage) | [Configuration](#configuration) | [Benchmark](#benchmark) | [Contributing](#contributing) | [License](#license) |
+
+---
+
+## 🗞️ News
+
+- 🆕 **2025-05-18** Added true parallel benchmarking with `ProcessPoolExecutor` and improved error handling.  
+- 🆕 **2025-05-10** Fixed MLflow URI parsing bug (`file:./mlruns` now works!).  
+- 🆕 **2025-04-30** Switched default config schema to Hydra v1.3.  
+
+*(Click the “+” below to see past releases…)*
+
+<details>
+<summary>Previous news</summary>
+
+- **2025-03-12** Initial public release: Hydra + MLflow + Optuna + multi-process runner  
+- **2025-02-25** Added `RunnerState` checkpointing & resume  
+</details>
+
+---
+
+## 🚀 Features
+
+- **Modular Configurations**  
+  Abstract `BenchmarkConfig` → one or more `RunnerConfig` → `DataConfig` / `ModelConfig` / `TrainerConfig` / `LoggingConfig` / `HPOConfig`  
+- **Parallel Benchmarking**  
+  Built–in support for `concurrent.futures.ProcessPoolExecutor`  
+- **Seamless Logging**  
+  Out-of-the-box MLflow integration with custom experiment & run naming  
+- **Hyper-parameter Tuning**  
+  Fully pluggable Optuna pipeline  
+- **Framework-agnostic**  
+  Run your favorite STPP in PyTorch → just subclass `BaseSTPPModule`  
+- **Reproducible**  
+  Deterministic seeds, config versioning, checkpoint & resume
+
+---
+
+## 💾 Installation
 
 ```bash
-python train.py -m hydra/launcher=joblib model=jumpcnf,selfattn,jumpgmm
+# From PyPI
+pip install gluecode
+
+# Or from source
+git clone https://github.com/YourOrg/GlueCode.git
+cd GlueCode
+pip install -e .
 ```
 
-## Comments
 
-1. **run the following when using NeuralSTPP**
+## 🚀 Getting Started
 
-   ```
-   python setup.py build_ext --inplace
-   ```
+Kick the tires with our **Example Usage** Colab:
 
-   (YA: I will think of a better way of doing this)
+<p align="left">
+  <a href="https://colab.research.google.com/github/your-user/your-repo/blob/main/notebooks/example_usage.ipynb">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg"
+         alt="Open in Colab"/>
+  </a>
+</p>
 
-2. **Install Dependencies:**
+Or clone locally and run:
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+git clone https://github.com/your-user/your-repo.git
+cd your-repo
+pip install -e .
+python train.py --config-name example_usage
+```
 
-## Framework and roadmap
-
-Below is the framework we are building for this package as text and in a graphic.
-Classes to implement:
-
-* [ ] [Dataset](https://github.com/YahyaAalaila/STPPGC/issues/11) -- Data used for model training and testing 
-* [ ] [Resampling](https://github.com/YahyaAalaila/STPPGC/issues/5) -- Methods for data splitting, holds rows/columns to slice
-* [ ] [Measure](https://github.com/YahyaAalaila/STPPGC/issues/16) -- Losses for model evaluation
-* [ ] [Estimator](https://github.com/YahyaAalaila/STPPGC/issues/2) -- Algorithms with train/test procedures (PyTorch + Lightning)
-* [ ] [ParameterSet](https://github.com/YahyaAalaila/STPPGC/issues/12) -- Hyperparameter configurations in a readable format
-* [ ] [Performance](https://github.com/YahyaAalaila/STPPGC/issues/17) -- Results from benchmark experiments for onward analysis
-
-Rectangular nodes represent base classes with the colours indicating implementation progress:
-
-- Green = Complete
-- Orange = In Progress
-- Red = To Do
+## Framework
 
 ```mermaid
 %%{init: {
