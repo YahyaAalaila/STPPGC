@@ -93,7 +93,8 @@ class RayTuneRunner(HyperTuner):
 
             best_val = best_trial.last_result["val_loss"]         
            
-            mlflow.log_params(analysis.best_config)
+            best_cfg = analysis.get_best_config(metric="val_loss", mode="min")
+            mlflow.log_params(best_cfg)
             mlflow.log_metric("best_val_loss", best_val)
             return analysis
         

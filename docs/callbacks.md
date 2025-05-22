@@ -1,26 +1,20 @@
 # Config-Factory & Runner Flow 
->>>>>>> afd847c (WIP: saving my in-progress changes 19-05-2025)
 
-%% RunnerConfig decomposition
-subgraph RUNNERCFG[RunnerConfig]
-    direction LR
-    A1 --> B1[DataConfig]
-    A1 --> B2["ModelConfig<br/>(NeuralSTPPConfig,…)"]
-    A1 --> B3[TrainerConfig]
-    A1 --> B4[LoggingConfig]
-    A1 --> B5[HPOConfig]
-end
+Below is a high-level overview of how our configuration-factory drives the construction 
+of data, model, trainer, logging and HPO components, and how the runner ties them all 
+together into a PyTorch Lightning experiment.
 
-%% HPO → Ray Tune
-B5 -->|"build_hpo_from_config()"| C0((HyperTuner))
-C0 -->|"run()"|      C1[RayTuneRunner]
-C1 -->|"optimize"|   B2
+## Configuration Factory
 
-%% Build model & trainer
-B2 -->|"build_model()"|          D1["BaseSTPPModule subclass"]
-B3 -->|"build_pl_trainer()"|     D2["⚡ Lightning Trainer"]
-B4 -->|"make_logger()"|          C2[MLflowLogger]
+### One object - Many specialised subobjects
+All configs inherit from `Config` (`_config.py`), which give the following
 
+1. YAML (`to_yaml`, `from_yaml`, `from_dict`) 
+2. `clone(**patch)` copy‑with‑override
+3. Ray‑Tune search‑space hook – subclasses can add tunables via `ray_space()`
+4. Class‑registry via Registrable (so you can write only the short name in YAML). This allows the following 
+`model: model_config: "neuralstpp"`
+5. Callbacks (EMA, schedulers, logger) plug into Lightning’s event hooks to provide extra behaviours without touching the training code.
 1. YAML (`to_yaml`, `from_yaml`, `from_dict`) 
 2. `clone(**patch)` copy‑with‑override
 3. Ray‑Tune search‑space hook – subclasses can add tunables via `ray_space()`

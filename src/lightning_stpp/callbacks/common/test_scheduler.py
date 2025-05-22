@@ -10,4 +10,4 @@ class TestSchedulerCallback(Callback):
     def on_train_epoch_end(self, trainer, pl_module):
         epoch = trainer.current_epoch
         if (epoch + 1) % self.every_n_epochs == 0:
-            trainer.test(pl_module, verbose=False)
+            trainer.validate(ckpt_path=None, verbose=False)

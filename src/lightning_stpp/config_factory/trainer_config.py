@@ -63,9 +63,15 @@ class TrainerConfig(Config):
     def _build_custom_callbacks(self, extra_callbacks, model_speciofic_callbacks):
         
         common_callbacks = [
-            ModelCheckpoint(dirpath= self.ckpt_dir, save_top_k  = self.save_top_k, monitor = self.monitor),
+            #ModelCheckpoint(dirpath= self.ckpt_dir, save_top_k  = self.save_top_k, monitor = self.monitor, mode="min"),
+                ModelCheckpoint(
+        dirpath=self.ckpt_dir,
+        save_top_k=1,                   # keep only the single best
+        monitor="val_loss",             # which metric to watch
+        mode="min",                     # smaller val_loss is better
+    ),
             TrainLoggerCallback(log_every_n_steps=self.log_every_n_steps),
-            ValidationSchedulerCallback(every_n_epochs=self.check_val_every_n_epochs),
+            #ValidationSchedulerCallback(every_n_epochs=self.check_val_every_n_epochs),
             TuneReportCheckpointCallback({"val_loss": "val_loss"}, on="validation_epoch_end")
             #TestSchedulerCallback(),
         ]
