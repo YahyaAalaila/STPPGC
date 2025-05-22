@@ -32,7 +32,6 @@ model:
     lowvar_trace      :  False
     search_space      : 
       lr: {loguniform: [1e-5, 1e-2]}
-      #add more
     warmup_itrs       : 2
     num_iterations    : 10
     momentum          : 0.9
@@ -54,7 +53,7 @@ trainer:
   max_epochs   : 1
   precision    : 32
   seed         : 123
-  ckpt_dir     : ./checkpoints/citibike_sweep
+  ckpt_dir     : ./checkpoints/PinwheelHawkesSweep
   save_top_k   : 1
   monitor      : val_loss
   resume_from  : null
@@ -66,7 +65,7 @@ trainer:
 # --- LOGGING -------------------------------------------------------------
 logging:
   mlflow_uri      : ./mlruns
-  experiment_name : citibike_neural_sweep
+  experiment_name : PinwheelHawkes_neural_sweep
   run_name        : sweep_parent
 
 # --- HPO -----------------------------------------------------------------
@@ -75,5 +74,5 @@ hpo:
   num_trials      : 1
   scheduler       : asha
   resources       : {cpu: 1}
-  results_dir     : ./ray_results/citibike_neural
-  experiment_name : citibike_neural_sweep
+  results_dir     : ./ray_results/PinwheelHawkesSweep
+  experiment_name : PinwheelHawkes_neural_sweep
