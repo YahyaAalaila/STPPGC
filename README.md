@@ -3,7 +3,7 @@
 
 <p align="center">
   <img
-    src="https://raw.githubusercontent.com/YourOrg/GlueCode/feature/lightning_stppv0.0.1/docs/logo.png"
+    src="https://raw.githubusercontent.com/YahyaAalaila/STPPGC/feature/lightning_stppv0.0.1/docs/stpplogo.png"
     alt="BenchSTPP logo"
     width="120"
 />
@@ -54,16 +54,17 @@
 ---
 
 ## Table&nbsp;of&nbsp;Contents
-| [News](#news) | [Features](#features) | [Model&nbsp;List](#model-list)| [Quick&nbsp;Start](#quick-start) | [License](#license) | [Acknowledgment](#acknowledgment) |
+| [News](#news) | [Features](#features) | [Model&nbsp;List](#model-list)| [Datasets](#datasets) |[Quick&nbsp;Start](#quick-start) | [License](#license) | [Acknowledgment](#acknowledgment) |
 
 
 ---
 
 <!-- ## 🗞️ News&nbsp;<a name="news"></a> -->
-## 🗞️ News
+## 🗞️ News&nbsp;<a name="news"></a> [[Back&nbsp;to&nbsp;Top](#top)]
 
-- ![UPCOMING](https://img.shields.io/badge/UPCOMING-lightgrey?style=flat)&nbsp;[24-05-2025] Presentation at LGHT
-- ![NEW](https://img.shields.io/badge/NEW-red?style=flat)&nbsp; [13-02-2025]Our review paper about [Neural Spatiotemporal Point Processes: Trends and Challenges](https://arxiv.org/abs/2502.09341) is up on [arxiv](https://arxiv.org/abs/2502.09341)
+- ![UPCOMING](https://img.shields.io/badge/UPCOMING-lightgrey?style=flat)&nbsp;[24-05-2025] Presentation at [Machine Learning &
+Global Health Network (MLGH)](https://mlgh.net/), London, UK.
+- ![NEW](https://img.shields.io/badge/NEW-red?style=flat)&nbsp; [13-02-2025] Our review paper about [Neural Spatiotemporal Point Processes: Trends and Challenges](https://arxiv.org/abs/2502.09341) is up on [arxiv](https://arxiv.org/abs/2502.09341)
 
 ---
 
@@ -177,7 +178,7 @@ flowchart TD
 ```
 ---
 
-## Tageted general flow
+## Targeted general flow
 
 ```mermaid
 %%{init: {
@@ -252,7 +253,8 @@ flowchart TD
 
 
 
-## Model List [[Back to Top]](#top)
+<!-- ## Approaches [[Back to Top]](#top) -->
+## Model List <a name="model-list"></a> [[Back&nbsp;to&nbsp;Top](#top)]
 
 Our package will include the following state-of-the-art STPP papers:
 
@@ -266,12 +268,22 @@ Our package will include the following state-of-the-art STPP papers:
 | 6  | ICLR’22     | NMSTPP | [Neural Spectral Marked Point Processes](https://arxiv.org/abs/2106.10773) | [PyTorch](https://github.com/meowoodie/Neural-Spectral-Marked-Point-Processes/tree/main) |
 | 7  | NeurIPS’23     | AutoSTPP   | [Automatic Integration for Spatiotemporal Neural Point Processes](https://arxiv.org/abs/2310.06179) | [PyTorch](https://github.com/Rose-STL-Lab/AutoSTPP) |
 | 8  | Springer     | NMSTP   | [Transformer-Based Neural Marked Spatio Temporal Point Process Model for Football Match Events Analysis](https://arxiv.org/abs/2302.09276) | [PyTorch](https://github.com/calvinyeungck/Football-Match-Event-Forecast) |
-
-
 ---
 
-## Getting Started [Back to Top](#top)
+## Datasets&nbsp;<a name="datasets"></a> [[Back&nbsp;to&nbsp;Top](#top)]
+In this initial version, we included one synthetic dataset and four real-world datasets that are presented in NeuralSTPP work:
+- **Pinwheel**: This is a synthetic data set with multimodal and non-Gaussian spatial distributions
+designed to test the ability to capture drastic changes due to event history (see fig. 5). The data set
+consists of 10 clusters which form a pinwheel structure. Events are sampled from a multivariate
+Hawkes process such that events from one cluster will increase the probability of observing events in
+the next cluster in a clock-wise rotation ([Chen RT, Amos B and Nickel M, 2016](https://arxiv.org/pdf/2011.04583))
+- **Earthquake**: ([U.S. Geological Survey, 2020](https://earthquake.usgs.gov/earthquakes/search/))
+- **COVID-19**: ([New York times, 2020](https://github.com/rearc-data/covid-19-nyt-data-in-usa?tab=readme-ov-file))
 
+A new synthetic data generator and additional real-world datasets will be added in future releases.
+
+<!-- ## Getting Started [Back to Top](#top) -->
+## Getting Started&nbsp;<a name="quick-start"></a> [[Back&nbsp;to&nbsp;Top](#top)]
 Clone locally and run:
 
 ### 1 · Install (current feature branch)
@@ -282,7 +294,7 @@ pip install \
 ```
 ---
 
-### 2 · Run with full .yanl file
+### 2 · Run with full YAML file
 ``` bash
 benchstpp train \
   --config examples/configs/ray_config.yaml
@@ -325,13 +337,13 @@ def main(cfg_path: str):
 if __name__ == "__main__":
     import sys
     main(sys.argv[1])
-    :contentReference[oaicite:0]{index=0}
 ```
 ``` bash 
 > `python examples/runner.py examples/configs/ray_config.yaml data.dataset_id=PinwheelHawkes`  
 > (or whatever override string you prefer).
 ```
-## 📝 License&nbsp;[[Back to Top]](#top)
+<!-- ## 📝 License&nbsp;[[Back to Top]](#top) -->
+## License&nbsp;<a name="license"></a> [[Back&nbsp;to&nbsp;Top](#top)]
 
 This project is released under the [Apache License 2.0](LICENSE).  
 Portions of the code are adapted from other open-source repositories; see the
@@ -339,7 +351,8 @@ Portions of the code are adapted from other open-source repositories; see the
 
 ---
 
-## 🙏 Acknowledgment&nbsp;[[Back to Top]](#top)
+<!-- ## 🙏 Acknowledgment&nbsp;[[Back to Top]](#top) -->
+## 🙏 Acknowledgment&nbsp;<a name="acknowledgment"></a> [[Back&nbsp;to&nbsp;Top](#top)]
 
 BenchSTPP draws inspiration—and in some cases borrows code snippets—from the
 fantastic open-source community.  We thank (and highly recommend) the following

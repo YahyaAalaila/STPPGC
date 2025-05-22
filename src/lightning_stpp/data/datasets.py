@@ -1,16 +1,11 @@
+# Copyright (c) Facebook, Inc. and its affiliates.
 from functools import partial
 import re
 import numpy as np
 import torch
 from .mhp import MHP
 END_TIME = 30.0
-### This is copied from NeuralSTPP imlementation and modified by adding methoids like (build_dataset_from_config)
-# https://github.com/facebookresearch/neural_stpp/blob/main/datasets.py
-# TODO: Build upon this to create a more general dataset class. (YA): Probably will be changed to a more general dataset class
 
-# PS: This is a bit of a mess, but it works for now.
-# PS: We can only use (generate from) pinwheel dataset for now, the rest work too, but we have to download the corresponding datasets
-# and put them in the right folder.
 def generate(mhp, data_fn, ndim, num_classes):
     mhp.generate_seq(END_TIME)
     event_times, classes = zip(*mhp.data)
