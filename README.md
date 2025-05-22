@@ -3,9 +3,9 @@
 
 <p align="center">
   <img
-    src="https://raw.githubusercontent.com/YahyaAalaila/STPPGC/feature/lightning_stppv0.0.1/docs/stpplogo.png"
+    src="https://raw.githubusercontent.com/YahyaAalaila/STPPGC/feature/lightning_stppv0.0.1/docs/logo2.png"
     alt="BenchSTPP logo"
-    width="120"
+    width="90"
 />
 </p>
 
