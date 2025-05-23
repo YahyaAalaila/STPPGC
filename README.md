@@ -24,8 +24,13 @@
   <a href="https://github.com/YahyaAalaila/STPPGC/commits/main">
     <img src="https://img.shields.io/github/last-commit/YahyaAalaila/STPPGC.svg" alt="Last commit"/>
   </a>
-  <a href="https://github.com/YahyaAalaila/STPPGC/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/YahyaAalaila/STPPGC/ci.yml" alt="CI"/>
+  <!-- <a href="https://github.com/YahyaAalaila/STPPGC/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/YahyaAalaila/STPPGC/ci.yml" alt="CI"/> -->
+  <a href="https://github.com/YahyaAalaila/STPPGC/tree/feature/lightning_stppv0.0.1">
+  <img
+    src="https://img.shields.io/badge/branch-latest-blue?style=flat-square"
+    alt="branch: latest" />
+</a>
   </a>
   <a href="https://github.com/YahyaAalaila/STPPGC/issues">
     <img src="https://img.shields.io/github/issues/YahyaAalaila/STPPGC.svg" alt="Open issues"/>
@@ -64,6 +69,13 @@
 
 - ![UPCOMING](https://img.shields.io/badge/UPCOMING-lightgrey?style=flat)&nbsp;[24-05-2025] Presentation at [Machine Learning &
 Global Health Network (MLGH)](https://mlgh.net/), London, UK.
+- ![NEW](https://img.shields.io/badge/NEW-red?style=flat)&nbsp; [19-05-2025] Our recent branch with the latest features </a>
+  <a href="https://github.com/YahyaAalaila/STPPGC/tree/feature/lightning_stppv0.0.1">
+  <img
+    src="https://img.shields.io/badge/branch-feature--lightning--stppv0.0.1-blue?style=flat-square"
+    alt="branch: feature/lightning_stppv0.0.1" />
+    </a>
+
 - ![NEW](https://img.shields.io/badge/NEW-red?style=flat)&nbsp; [13-02-2025] Our review paper about [Neural Spatiotemporal Point Processes: Trends and Challenges](https://arxiv.org/abs/2502.09341) is up on [arxiv](https://arxiv.org/abs/2502.09341)
 
 ---
