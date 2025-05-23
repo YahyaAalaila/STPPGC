@@ -1,22 +1,18 @@
 import mlflow
+from ray import tune
+import os
+from ray.tune.context import get_context
+
 from lightning_stpp.config_factory.model_config import NeuralSTPPConfig
 from lightning_stpp.HPO.hpo_base import HyperTuner
 from lightning_stpp.runner._runner import BaseRunner
-import pytorch_lightning as pl
-from ray import tune
-from ray.tune import CLIReporter
-from ray.tune.schedulers import ASHAScheduler
-from ray.tune.integration.pytorch_lightning import TuneReportCallback
 
-# File: ray_tune_runner.py
-from ray import tune
-from ray.tune.integration.pytorch_lightning import TuneReportCallback
-import os
 
 @HyperTuner.register(name='ray_tune')
 class RayTuneRunner(HyperTuner):
     def __init__(self, cfg):
         super().__init__(cfg)
+        self.runner_config = cfg
         
     def _search_space(self):
         space = {}
@@ -37,11 +33,11 @@ class RayTuneRunner(HyperTuner):
         
         # Create a new config object with the patched model
         # this creates a copy of config without altering it, so it will be untouched for each new trial.
-        trial_config = self.hpo_config.clone(
+        trial_config = self.runner_config.clone(
             model=patched_model,
             trainer=patched_trainer
         )
-        run_name = f"trial_{tune.get_trial_id()}"
+        run_name = f"trial_{get_context().get_trial_id()}"
         # Open an MLflow run context in this trial as a child run of the parent run which is already active.
         # This is a nested (nested = true) run, so it will be a child of the parent run.
         with mlflow.start_run(
@@ -49,9 +45,8 @@ class RayTuneRunner(HyperTuner):
             run_id = None,
             experiment_id=None,
             nested=True,
-            tags={"ray_trial": tune.get_trial_id()},
+            tags={"ray_trial": get_context().get_trial_id()},
             description="Ray Tune trial") as child_run:
-        
             # Build runner and attach tune callback
             runner = BaseRunner.build_runner_from_config(trial_config)
             
@@ -60,13 +55,10 @@ class RayTuneRunner(HyperTuner):
             # The MLFlowLogger keeps its active run IDs in private attrs, so we override them:
             runner.mlflow_logger._run_id = child_run.info.run_id
             runner.mlflow_logger._experiment_id = child_run.info.experiment_id
-            
-            runner.trainer.callbacks.append(TuneReportCallback({"val_loss": "val_loss"}))
-            runner.run()
-
+            runner.fit()
 
     def run(self):
-        # Define trainable for Ray Tune
+        #Define trainable for Ray Tune
         trainable = tune.with_parameters(
             self._run_single_trial,
         )
@@ -76,7 +68,8 @@ class RayTuneRunner(HyperTuner):
             # nested = Fasle to not try to make this ru a child of any already-active run in this process
             # to guarantee this is a top-level run.
             os.environ["MLFLOW_PARENT_RUN_ID"] = parent_run.info.run_id # allow workes to know the parent run id 
-            
+                       # print("Best config:", analysis.best_config)
+            search_space = self._search_space()  
             # Execute HPO
             analysis = tune.run(
                 trainable,
@@ -86,14 +79,21 @@ class RayTuneRunner(HyperTuner):
                 scheduler = self.hpo_config.make_scheduler(10),
                 resources_per_trial=self.hpo_config.resources,
                 storage_path=self.hpo_config._dir_setup(),
+                max_concurrent_trials=1,
                 name=self.hpo_config.experiment_name,
-                #metric="val_loss",
-                #mode="min"
+                verbose=3
             )
-                    # optionally log best results to parent
-            mlflow.log_metric("best_val_loss", analysis.best_result["val_loss"])
-            mlflow.log_params(analysis.best_config)
+            
+            # after tune.run(), your analysis is an ExperimentAnalysis
+            best_trial = analysis.get_best_trial(
+                metric="val_loss",   # the same name you report from your Lightning callback
+                mode="min",
+            )
+            print("→ trial last_result keys:", best_trial)
 
-            print("Best config:", analysis.best_config)
+            best_val = best_trial.last_result["val_loss"]         
+           
+            mlflow.log_params(analysis.best_config)
+            mlflow.log_metric("best_val_loss", best_val)
             return analysis
         

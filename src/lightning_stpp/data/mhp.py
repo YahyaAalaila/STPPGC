@@ -1,3 +1,30 @@
+"""
+MIT License
+
+Copyright (c) 2017 Steve Morse
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+"""
+
+##########################
+
+# Implementation of MAP EM algorithm for Hawkes process
+#  taken from:
+#  https://github.com/stmorse/hawkes
+#  described in:
+#  https://stmorse.github.io/docs/orc-thesis.pdf
+#  https://stmorse.github.io/docs/6-867-final-writeup.pdf
+# For usage see README
+# For license see LICENSE
+# Author: Steven Morse
+# Email: steventmorse@gmail.com
+# License: MIT License
+
+##########################
 import numpy as np
 class MHP:
     def __init__(self, alpha=[[0.5]], mu=[0.1], omega=1.0):
@@ -29,7 +56,7 @@ class MHP:
         n0 = np.random.choice(np.arange(self.dim),
                               1,
                               p=(self.mu / Istar))
-        self.data.append([s, n0])
+        self.data.append([s, int(n0)])
 
         # value of \lambda(t_k) where k is most recent event
         # starts with just the base rate
@@ -68,7 +95,7 @@ class MHP:
                 return self.data
 
             if n0 < self.dim:
-                self.data.append([s, n0])
+                self.data.append([s, int(n0)])
                 # update lastrates
                 lastrates = rates.copy()
             else:

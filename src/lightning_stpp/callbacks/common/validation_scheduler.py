@@ -1,5 +1,4 @@
 from lightning.pytorch.callbacks import Callback
-
 class ValidationSchedulerCallback(Callback):
     """
     Runs validation every `every_n_epochs` epochs during training.
@@ -12,4 +11,4 @@ class ValidationSchedulerCallback(Callback):
         epoch = trainer.current_epoch
         if (epoch + 1) % self.every_n_epochs == 0:
             # `verbose=False` silences the extra printouts
-            trainer.validate(pl_module, verbose=False)
+            trainer.validate(verbose=False)

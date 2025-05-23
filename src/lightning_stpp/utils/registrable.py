@@ -36,13 +36,6 @@ class Registrable:
             def __init__(self, param1: int, param2: str):
                 ...
         ```
-        Registering a class like this will let you instantiate a class from a config file, where you
-        give ``"type": "shift-transform"``, and keys corresponding to the parameters of the ``__init__``
-        method (note that for this to work, those parameters must have type annotations).
-        If you want to have the instantiation from a config file call a method other than the
-        constructor, either because you have several different construction paths that could be
-        taken for the same object (as we do in ``Transform``) or because you have logic you want to
-        happen before you get to the constructor, you can register a specific ``@classmethod`` as the constructor to use.
         """
         registry = Registrable._registry[cls]
 

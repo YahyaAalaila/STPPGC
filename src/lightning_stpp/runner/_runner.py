@@ -3,7 +3,7 @@ from abc import abstractmethod
 
 
 from lightning_stpp.utils.registrable import Registrable
-from pytorch_lightning.loggers import MLFlowLogger
+from lightning.pytorch.loggers import MLFlowLogger
 from lightning_stpp.config_factory.runner_config import RunnerConfig 
 
 class BaseRunner(Registrable):
@@ -16,12 +16,11 @@ class BaseRunner(Registrable):
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger("BaseRunner")
         self._setup_logger()
-        # TODO: Set up data loading logic here? 
 
     @staticmethod
     def build_runner_from_config(cfg):
         """
-        TODO: Add description of what this function does.  
+        TODO: Add description of what this method does.  
         """
         runner_class = BaseRunner.by_name(cfg.runner_id)
         if runner_class is None:
@@ -30,7 +29,6 @@ class BaseRunner(Registrable):
     
     ## TODO: Make this better
     def _setup_logger(self):
-        print("logging config keys:", vars(self.cfg.logging))
         self.mlflow_logger = MLFlowLogger(
             experiment_name=self.cfg.logging.experiment_name,
             run_name=self.cfg.logging.run_name,

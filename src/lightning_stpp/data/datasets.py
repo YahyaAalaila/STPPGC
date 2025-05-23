@@ -1,20 +1,15 @@
+# Copyright (c) Facebook, Inc. and its affiliates.
 from functools import partial
 import re
 import numpy as np
 import torch
 from .mhp import MHP
 END_TIME = 30.0
-### This is copied from NeuralSTPP imlementation and modified by adding methoids like (build_dataset_from_config)
-# https://github.com/facebookresearch/neural_stpp/blob/main/datasets.py
-# TODO: Build upon this to create a more general dataset class. (YA): Probably will be changed to a more general dataset class
 
-# PS: This is a bit of a mess, but it works for now.
-# PS: We can only use (generate from) pinwheel dataset for now, the rest work too, but we have to download the corresponding datasets
-# and put them in the right folder.
 def generate(mhp, data_fn, ndim, num_classes):
     mhp.generate_seq(END_TIME)
     event_times, classes = zip(*mhp.data)
-    classes = np.concatenate(classes)
+    classes = np.array(classes, dtype=float).reshape(-1)
     n = len(event_times)
 
     data = data_fn(n)
@@ -52,12 +47,12 @@ class STDataset(torch.utils.data.Dataset):
         self.dataset = [(torch.tensor(seq) - S_mean_) / S_std_ for seq in (train_set if train else test_set)]
         
     @staticmethod
-    def build_dataset_from_config(model_config):
+    def build_dataset_from_config(data_config):
         """
         Generates a dataset from the given configuration.
         This method should be overridden in subclasses to create specific datasets.
         """
-        dataset_id = model_config.dataset_id
+        dataset_id = data_config.dataset_id
         for subclass in STDataset.__subclasses__():
             if dataset_id == subclass.__name__:
                 return subclass
@@ -84,21 +79,21 @@ class STDataset(torch.utils.data.Dataset):
         indices = np.argsort(lengths)
         return indices, lengths[indices]
 
-    # def batch_by_size(self, max_events):
-    #     try:
-    #         from data_utils_fast import batch_by_size_fast
-    #     except ImportError:
-    #         raise ImportError('Please run `python setup.py build_ext --inplace`')
+    def batch_by_size(self, max_events):
+        try:
+            from lib.neural_stpp.data_utils_fast import batch_by_size_fast
+        except ImportError:
+            raise ImportError('Please run `python setup.py build_ext --inplace`')
 
-    #     indices, num_tokens = self.ordered_indices()
+        indices, num_tokens = self.ordered_indices()
 
-    #     if not isinstance(indices, np.ndarray):
-    #         indices = np.fromiter(indices, dtype=np.int64, count=-1)
-    #     num_tokens_fn = lambda i: num_tokens[i]
+        if not isinstance(indices, np.ndarray):
+            indices = np.fromiter(indices, dtype=np.int64, count=-1)
+        num_tokens_fn = lambda i: num_tokens[i]
 
-    #     return batch_by_size_fast(
-    #         indices, num_tokens_fn, max_tokens=max_events, max_sentences=-1, bsz_mult=1,
-    #     )
+        return batch_by_size_fast(
+            indices, num_tokens_fn, max_tokens=max_events, max_sentences=-1, bsz_mult=1,
+        )
 
     def __getitem__(self, index):
         return self.dataset[index]
@@ -112,15 +107,15 @@ class PinwheelHawkes(STDataset):
         w = 10.0
 
         mhp = MHP(mu=m, alpha=a, omega=w)
-        num_train = 2000
-        num_val = 200
-        num_test = 200
+        num_train = 100
+        num_val = 50
+        num_test = 50
 
-        with np.random.seed(13579):
-            data_fn = partial(pinwheel, num_classes=num_classes)
-            train_set = [generate(mhp, data_fn, ndim=2, num_classes=num_classes) for _ in range(num_train)]
-            val_set = [generate(mhp, data_fn, ndim=2, num_classes=num_classes) for _ in range(num_val)]
-            test_set = [generate(mhp, data_fn, ndim=2, num_classes=num_classes) for _ in range(num_test)]
+        np.random.seed(13579)
+        data_fn = partial(pinwheel, num_classes=num_classes)
+        train_set = [generate(mhp, data_fn, ndim=2, num_classes=num_classes) for _ in range(num_train)]
+        val_set = [generate(mhp, data_fn, ndim=2, num_classes=num_classes) for _ in range(num_val)]
+        test_set = [generate(mhp, data_fn, ndim=2, num_classes=num_classes) for _ in range(num_test)]
 
         split_set = {
             "train": train_set,

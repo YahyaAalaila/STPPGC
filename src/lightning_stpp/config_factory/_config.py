@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict
 from omegaconf import OmegaConf
 from pathlib import Path
+
+import yaml
 from lightning_stpp.utils.registrable import Registrable
 
 @dataclass
@@ -16,6 +18,10 @@ class Config(Registrable, ABC):
 
     def to_yaml(self, path: str | Path):
         OmegaConf.save(config=OmegaConf.create(self.to_dict()), f=str(path))
+        
+    def get_yaml_config(self) -> str:
+        """Return this config (dataclass) serialised to YAML."""
+        return yaml.dump(asdict(self), sort_keys=False)
 
     @classmethod
     def from_yaml(cls, path: str | Path, **overrides) -> "Config":
@@ -45,6 +51,22 @@ class Config(Registrable, ABC):
                 kwargs[f.name] = val
 
         return cls(**kwargs)# type: ignore[arg-type]
+    
+    def to_hparams(self, prefix: str | None = None) -> dict:
+        """
+        Return a flat Python dict that Lightning’s ``save_hyperparameters`` accepts.
+        • Nested ``Config`` objects are expanded with ``<prefix>.field`` keys.
+        • Non-primitive values (lists, dicts, dataclasses…) are left as-is
+        – Lightning can store them verbatim.
+        """
+        def _flatten(obj, base):
+            if isinstance(obj, Config):
+                for k, v in asdict(obj).items():
+                    yield from _flatten(v, f"{base}{k}.")
+            else:
+                yield base[:-1], obj  # drop trailing dot
+
+        return {k: v for k, v in _flatten(self, "" if prefix is None else f"{prefix}.")}
 
     # -------- Ray‑Tune helpers (optional) ----
     @staticmethod

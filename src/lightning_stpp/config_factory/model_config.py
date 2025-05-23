@@ -13,12 +13,12 @@ class NeuralSTPPConfig(Config):
     Configuration class for NeuralSTPP models.
     Inherits from ModelConfig and adds additional parameters specific to NeuralSTPP.
     """
-
-    model_id          : str = "jump-cnf"  # or "att-cnf", "cond_gmm"
+    model_id          : str = "neuralstpp"  # or "att-cnf", "cond-gmm"
+    model_sub_id      : str = "jump-cnf"  # or "att-cnf", "cond_gmm"
     dim               : int = 2
-    t0               : float = 0.0
-    t1               : float = 1.0
-    hdims              : list[int] = field(default_factory=lambda: [64, 64, 64])
+    t0                : float = 0.0
+    t1                : float = 50.0
+    hdims             : list[int] = field(default_factory=lambda: [64, 64, 64])
     tpp_hidden_dims   : list[int] = field(default_factory=lambda: [8, 20])
     actfn             : str      = "softplus"
     tpp_cond          : bool     = False
@@ -42,9 +42,11 @@ class NeuralSTPPConfig(Config):
     weight_decay       : float    = 0.0
     gradclip           : float    = 1.0
     max_events         : int      = 1000
+    data_loaders      : Dict[str, Any] = field(default_factory=dict)
+
     
     def __post_init__(self):
-        if self.model_id not in ["jump-cnf", "att-cnf", "cond-gmm"]:
+        if self.model_sub_id not in ["jump-cnf", "att-cnf", "cond-gmm"]:
             raise ValueError(f"Unknown NeuralSTPP variant {self.model_id!r}")
         # Additional validation or preparation can be done here if needed
         if not isinstance(self.hdims, list):
@@ -81,20 +83,20 @@ class NeuralSTPPConfig(Config):
         
         self.prepare_kwargs() # prepare shared kwargs
         
-        if self.model_id == "jump-cnf":
+        if self.model_sub_id == "jump-cnf":
             from lib.neural_stpp.models import JumpCNFSpatiotemporalModel
             kwargs = self.shared_model_kwargs.copy()
             kwargs["solve_reverse"] = self.solve_reverse
-            return JumpCNFSpatiotemporalModel(**kwargs)
-        elif self.model_id == "att-cnf":
+            return JumpCNFSpatiotemporalModel(**kwargs).float()
+        elif self.model_sub_id == "att-cnf":
             from lib.neural_stpp.models import SelfAttentiveCNFSpatiotemporalModel
             kwargs = self.shared_model_kwargs.copy()
             kwargs["solve_reverse"] = self.solve_reverse
             kwargs["l2_attn"]     = self.l2_attn
             kwargs["lowvar_trace"] = not self.naive_hutch
-            return SelfAttentiveCNFSpatiotemporalModel(**kwargs)
-        elif self.model_id == "cond-gmm":
+            return SelfAttentiveCNFSpatiotemporalModel(**kwargs).float()
+        elif self.model_sub_id == "cond-gmm":
             from lib.neural_stpp.models import JumpGMMSpatiotemporalModel # type: ignore
-            return JumpGMMSpatiotemporalModel(**self.shared_model_kwargs)
+            return JumpGMMSpatiotemporalModel(**self.shared_model_kwargs).float()
         else:
-            raise ValueError(f"Unknown NeuralSTPP variant {self.model_id!r}")
+            raise ValueError(f"Unknown NeuralSTPP variant {self.model_sub_id!r}")

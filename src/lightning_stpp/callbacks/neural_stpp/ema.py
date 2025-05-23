@@ -4,7 +4,7 @@
 
 
 
-from pytorch_lightning.callbacks import Callback
+from lightning.pytorch.callbacks import Callback
 import torch
 
 class ExponentialMovingAverage(object):
@@ -45,16 +45,37 @@ class ExponentialMovingAverage(object):
             )
         )
 
-class EMACallback(Callback):
+# class EMACallback(Callback):
     
-    def __init__(self, decay = 0.99): 
+#     def __init__(self, decay = 0.99): 
+#         self.decay = decay
+#     def setup(self, trainer, pl_module, stage):
+#         # called once before anything
+#         self.ema = ExponentialMovingAverage(pl_module, decay=self.decay)
+#     def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
+#         self.ema.apply()
+#     def on_validation_start(self, trainer, pl_module):
+#         self.ema.replace_with_ema()
+#     def on_validation_end(self, trainer, pl_module):
+#         self.ema.swap()
+
+from lightning.pytorch.callbacks import Callback
+
+class EMACallback(Callback):
+    def __init__(self, decay: float = 0.999):
+        super().__init__()
         self.decay = decay
-    def setup(self, trainer, pl_module, stage):
-        # called once before anything
-        self.ema = ExponentialMovingAverage(pl_module, decay=self.decay)
-    def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
-        self.ema.apply()
-    def on_validation_start(self, trainer, pl_module):
-        self.ema.replace_with_ema()
-    def on_validation_end(self, trainer, pl_module):
-        self.ema.swap()
+        self.ema_params: dict[str, torch.Tensor] = {}
+
+    def on_train_batch_start(self, trainer, pl_module, batch, batch_idx):
+        # Register each param once
+        for name, p in pl_module.named_parameters():
+            if name not in self.ema_params:
+                # clone and detach so we don’t track grads
+                self.ema_params[name] = p.data.clone().detach()
+
+    def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
+        # Update EMA in‐place: ema = decay*ema + (1-decay)*current
+        for name, p in pl_module.named_parameters():
+            ema = self.ema_params[name]
+            ema.mul_(self.decay).add_(p.data, alpha=1.0 - self.decay)
