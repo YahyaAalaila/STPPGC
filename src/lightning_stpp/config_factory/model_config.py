@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict
 from ._config import Config
 import ray
-from ._parsing import parse_tune_dsl
+from ._parsing import split_search_space
 
     
    
@@ -43,6 +43,8 @@ class NeuralSTPPConfig(Config):
     gradclip           : float    = 1.0
     max_events         : int      = 1000
     data_loaders      : Dict[str, Any] = field(default_factory=dict)
+    # ---------- internal ----------
+    _ray_tune_space: dict = field(init=False, repr=False, default_factory=dict)
 
     
     def __post_init__(self):
@@ -54,6 +56,14 @@ class NeuralSTPPConfig(Config):
         if not isinstance(self.tpp_hidden_dims, list):
             raise TypeError(f"tpp_hidden_dims must be a list, got {type(self.tpp_hidden_dims).__name__}")
         # add more
+        
+        if self.search_space:
+            tunables, constants = split_search_space(self.search_space, type(self))
+            for k, v in constants.items():
+                if hasattr(self, k):
+                    setattr(self, k, v)
+            self._ray_tune_space = tunables
+            self.search_space = None        # optional tidy-up
     @classmethod
     def parse_from_yaml_config(cls, raw:dict):
         return cls(**raw)
@@ -74,10 +84,7 @@ class NeuralSTPPConfig(Config):
         }
         
     def ray_space(self):
-        from ray import tune
-        if self.search_space:
-            return parse_tune_dsl(self.search_space)
-        return {}
+        return self._ray_tune_space
             
     def build_model(self):
         
