@@ -183,5 +183,5 @@ cython_debug/
 experiments/
 mlruns/
 results/
-tests/
+
 run_examples/
