@@ -15,32 +15,29 @@ model:
     t0                : 0.0
     t1                : 30.0
     dim               :  2
-    search_space:
-        hdims             : [64, 64, 64] # This variable is of type list, so if a list is provided, then it is interpreted
-                          # as a fixed value. If you want to sample from a range, use the format list of lists or specify samplers
-        tpp_hidden_dims   : [8, 20]
-        actfn             :  "softplus"
-        tpp_cond          :  False
-        tpp_style         : "split"
-        tpp_actfn         : "softplus"
-        share_hidden      :  False
-        solve_reverse     :  False
-        l2_attn           :  False
-        tol               :  1e-3
-        otreg_strength    :  0.0
-        tpp_otreg_strength:  0.0
-        layer_type        :  "concat"
-        naive_hutch       :  False
-        lowvar_trace      :  False
-        lr                :  [1e-3, 1e-5] # This tels model config to sample lr from loguniform distribution. 
-                                          # If you want to use a fixed value, just set it to a float.
-                                          # If you want a different sampler, use this format {sampler_name: [value1, value2]}
-        warmup_itrs       : 2
-        num_iterations    : 10
-        momentum          : 0.9
-        weight_decay      : 0.0
-        gradclip          : 1.0
-        max_events        : 100
+    hdims             : [64, 64, 64]
+    tpp_hidden_dims   : [8, 20]
+    actfn             :  "softplus"
+    tpp_cond          :  False
+    tpp_style         : "split"
+    tpp_actfn         : "softplus"
+    share_hidden      :  False
+    solve_reverse     :  False
+    l2_attn           :  False
+    tol               :  1e-3
+    otreg_strength    :  0.0
+    tpp_otreg_strength:  0.0
+    layer_type        :  "concat"
+    naive_hutch       :  False
+    lowvar_trace      :  False
+    search_space      : 
+      lr: {loguniform: [1e-5, 1e-2]}
+    warmup_itrs       : 2
+    num_iterations    : 10
+    momentum          : 0.9
+    weight_decay      : 0.0
+    gradclip          : 1.0
+    max_events        : 100
     data_loaders:
       train_bsz  : 16
       val_bsz    : 64

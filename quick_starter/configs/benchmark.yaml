@@ -6,8 +6,15 @@
 #   path         : ./data/citibike/
 #   batch_size   : 128
 #   input_dim    : 2     
-dataset: pinwheel      
-n_workers: 6
+dataset: 
+  dataset_name: pinwheel      
+  batch_size   : 128
+  train_bsz    : 16
+  val_bsz      : 64
+  test_bsz     : 64
+  num_workers  : 8
+  max_events   : 4096      # optional event-count sampler
+#n_workers: 6
 seed: 123
 logging :
   mlflow_uri  : "file:mlruns"
@@ -54,12 +61,23 @@ experiments:
         weight_decay      : 0.0
         gradclip          : 1.0
         max_events        : 100
+        
 
-     trainer :
-        gpus        : 1
-        max_epochs  : 2
-        precision   : "16"
-        ckpt_dir    : ckpts/jump
+
+     trainer:
+        gpus         : 1
+        max_epochs   : 50
+        log_every_n_steps: 100
+        check_val_every_n_epochs: 1
+        precision    : "16-mixed"
+        ckpt_dir     : ckpts/jump
+        save_top_k   : 3
+        monitor      : val_loss
+        resume_path  : null
+        extra_callbacks:
+          - class_path: callbacks.common.test_scheduler.TestSchedulerCallback
+          - init_args:
+              test_every_n_epochs: 5
 
 
 

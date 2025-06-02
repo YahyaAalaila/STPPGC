@@ -22,8 +22,9 @@ class HPOConfig(Config):
             raise ValueError("Number of trials must be positive.")
         if self.scheduler not in ["asha", "random", "bayesopt"]:
             raise ValueError("Scheduler must be one of ['asha', 'random', 'bayesopt'].")
-        if self.resources["cpu"] <= 0 or self.resources["gpu"] <= 0:
-            raise ValueError("CPU and GPU resources must be positive.")
+        if len(self.resources)>=2:
+            if self.resources["cpu"] <= 0 or self.resources["gpu"] <= 0:
+                raise ValueError("CPU and GPU resources must be positive.")
         if self.hpo_id not in ["ray_tune"]: # If other HPO frameworks are added, then append in the list
             raise ValueError("Tuner ID must be one of ['ray_tune'].")
         
@@ -52,7 +53,7 @@ class HPOConfig(Config):
             # ASHA scheduler
             from ray.tune.schedulers import ASHAScheduler
             return ASHAScheduler(
-                metric="loss",
+                metric="val_loss",
                 mode="min",
                 max_t=max_t,
                 grace_period=1,
@@ -62,14 +63,14 @@ class HPOConfig(Config):
             # FIFO scheduler
             from ray.tune.schedulers import FIFOScheduler
             return FIFOScheduler(
-                metric="loss",
+                metric="val_loss",
                 mode="min",
             )
         elif self.scheduler == "hyperband":
             # Hyperband scheduler
             from ray.tune.schedulers import HyperBandScheduler
             return HyperBandScheduler(
-                metric="loss",
+                metric="val_loss",
                 mode="min",
                 max_t=max_t,
                 grace_period=1,
@@ -79,7 +80,7 @@ class HPOConfig(Config):
             # Population Based Training (PBT) scheduler
             from ray.tune.schedulers import PopulationBasedTraining
             return PopulationBasedTraining(
-                metric="loss",
+                metric="val_loss",
                 mode="min",
                 perturbation_interval=10
             )
@@ -87,7 +88,7 @@ class HPOConfig(Config):
             # Median scheduler
             from ray.tune.schedulers import MedianStoppingRule
             return MedianStoppingRule(
-                metric="loss",
+                metric="val_loss",
                 mode="min",
                 patience=5,
             )

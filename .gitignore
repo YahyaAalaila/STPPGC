@@ -182,3 +182,11 @@ cython_debug/
 
 experiments/
 mlruns/
+results/
+
+run_examples/
+
+# Ignore temporarily
+tests/**
+!tests/config_factory/
+!tests/config_factory/test_model_config.py

@@ -1,34 +1,38 @@
+from lightning_stpp.config_factory.model_config import NeuralSTPPConfig
 from ._runner import BaseRunner
 from lightning_stpp.models.base import BaseSTPPModule
 from lightning_stpp.data.base import LightDataModule
+from ray.tune.integration.pytorch_lightning import TuneReportCheckpointCallback
 
 @BaseRunner.register(name='dl_stpp')
 class Runner(BaseRunner):
     def __init__(self, cfg):
         super().__init__(cfg)
         self.config = cfg
-        self._inititialize_model(cfg)
+        self._inititialize_model()
         self._setup_logger()
-        
         # build trainer friom model config
         self.trainer = cfg.trainer.build_pl_trainer(
             logger = self.mlflow_logger,
             extra_callbacks = cfg.trainer.custom_callbacks,
             model_speciofic_callbacks= self.model.callbacks(), # build callbacks that might be specific to the model
             )
+    
 
-    def _inititialize_model(self, cfg):
+    def _inititialize_model(self):
         # Initialize the model based on the configuration
-        #self.model = BaseSTPPModule.build_model_from_config(cfg.model)
-        stpp_class = BaseSTPPModule.by_name(cfg.model)
-        self.model = stpp_class(cfg.model)
+        model_cfg = self.config.model         
+        stpp_class = BaseSTPPModule.by_name(model_cfg.model_id)
+        print("stpp_class:", stpp_class)
+        self.model = stpp_class(model_cfg)
         # Initialize the corresponding datamodule
-        self.datamodule = LightDataModule.build_datamodule_from_config(cfg.data)
+        self.datamodule = LightDataModule.build_datamodule_from_config(self.config)
 
     def fit(self):
         # Implement the logic for fitting the model
         self.logger.info("Starting training...")
         self.trainer.fit(self.model, datamodule=self.datamodule)
+        print("\n\n\n SEEE HEEERRREE \n\n\n", self.trainer.callback_metrics.keys())
         
     def evaluate(self, verbose = False):
         # Implement the logic for evaluating the model
