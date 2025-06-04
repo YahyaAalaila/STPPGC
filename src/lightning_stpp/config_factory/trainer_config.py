@@ -19,8 +19,8 @@ from ray.tune.integration.pytorch_lightning import TuneReportCheckpointCallback
 class TrainerConfig(Config):
     gpus       : int = 1
     max_epochs : int = 50
-    precision  : str = "32"
-    accelerator : str = "gpu" # "cpu", "gpu", "mps"
+    precision  : str = 32
+    accelerator : str = "cpu" # "cpu", "gpu", "mps"
     seed       : int = 42
     ckpt_dir   : str = "./checkpoints"
     save_top_k : int = 1
