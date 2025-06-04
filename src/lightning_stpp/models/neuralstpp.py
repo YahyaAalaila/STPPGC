@@ -1,7 +1,7 @@
 import math
 from .base import BaseSTPPModule
 from lightning_stpp.utils.lr_schedules import lr_warmup_cosine
-from lib.neural_stpp.models import JumpCNFSpatiotemporalModel
+from lightning_stpp.lib.neural_stpp.models import JumpCNFSpatiotemporalModel
 
 import torch
 import torch.nn as nn
