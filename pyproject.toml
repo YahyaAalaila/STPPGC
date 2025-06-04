@@ -23,6 +23,8 @@ dependencies = [
 neural = [
   "neural_stpp @ git+https://github.com/YahyaAalaila/neural_stpp.git@main#egg=neural_stpp"
 ]
+[tool.setuptools]              #  New
+package-dir = {"" = "src"}     #  New
 
 [tool.setuptools.packages.find]
 where   = ["src"]
