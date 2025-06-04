@@ -1,6 +1,6 @@
 # STPP Glue Code
 
-This repository provides a **glue code** framework for experimenting with Spatiotemporal Point Process (STPP) methods, at the momemnt only two frameworks are included: **NeuralSTPP** and **DeepSTPP** (with deepstpp not tested yet). It centralizes data loading, configuration, and training/evaluation scripts so you can easily switch or combine these methods.
+This repository provides a **glue code** framework for experimenting with Spatiotemporal Point Process (STPP) methods, at the moment only two frameworks are included: **NeuralSTPP** and **DeepSTPP** (with deepstpp not tested yet). It centralizes data loading, configuration, and training/evaluation scripts so you can easily switch or combine these methods.
 
 ## Contents
 
