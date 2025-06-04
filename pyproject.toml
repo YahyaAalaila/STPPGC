@@ -13,11 +13,10 @@ description     = "Benchmarks for spatiotemporal point processes"
 readme          = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-  "torch==2.2.0",
+  "torch==2.6.0",
   "lightning==2.2.0",
   "ray[tune]==2.9.0",
-  "numpy==1.26.4",
-  "pyyaml==6.0.1",
+  "numpy==2.0.0",
 ]
 
 [project.optional-dependencies]
