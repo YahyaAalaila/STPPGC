@@ -1,6 +1,9 @@
 from lightning_stpp.config_factory.model_config import NeuralSTPPConfig
 from ._runner import BaseRunner
-from lightning_stpp.models.base import BaseSTPPModule
+# NOTE: importing from the package ensures that lightning_stpp.models.__init__
+# runs and registers all available model classes via the Registrable mechanism.
+# Importing the submodule directly would bypass this auto-discovery step.
+from lightning_stpp.models import BaseSTPPModule
 from lightning_stpp.data.base import LightDataModule
 from ray.tune.integration.pytorch_lightning import TuneReportCheckpointCallback
 
