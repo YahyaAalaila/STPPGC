@@ -16,7 +16,7 @@ dependencies = [
   "torch==2.6.0",
   "lightning==2.2.0",
   "ray[tune]==2.9.0",
-  "numpy==2.0.0",
+  "numpy>=2.0.0",
 ]
 
 [project.optional-dependencies]
