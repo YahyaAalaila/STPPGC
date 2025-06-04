@@ -9,3 +9,4 @@ omegaconf==2.3.0
 PyYAML==6.0.2
 mlflow==2.21.0
 tensorboard==2.18.0
+fsspec==2025.3.2
