@@ -1,7 +1,7 @@
 setuptools==68.2.2
 torch==2.6.0
 lightning==2.2.0
-ray[tune]==2.9.0
+ray[tune]==2.46.0
 numpy==2.0.2
 pandas==2.2.2
 torchdiffeq==0.2.5
