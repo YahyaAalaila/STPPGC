@@ -16,13 +16,15 @@ dependencies = [
   "torch==2.6.0",
   "lightning==2.2.0",
   "ray[tune]==2.9.0",
-  "numpy>=2.0.0"
+  "numpy>=2.0.0",
+  "neural_stpp @ git+https://github.com/YahyaAalaila/neural_stpp.git@main#egg=neural_stpp",
 ]
 
-[project.optional-dependencies]
-neural = [
-  "neural_stpp @ git+https://github.com/YahyaAalaila/neural_stpp.git@main#egg=neural_stpp"
-]
+# FIXME
+#[project.optional-dependencies]
+# neural = [
+#   "neural_stpp @ git+https://github.com/YahyaAalaila/neural_stpp.git@main#egg=neural_stpp"
+# ]
 [tool.setuptools]              #  New
 package-dir = {"" = "src"}     #  New
 
