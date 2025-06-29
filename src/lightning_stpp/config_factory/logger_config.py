@@ -1,6 +1,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
+import mlflow
 from ._config import Config
 @Config.register("logging_config")
 @dataclass
@@ -34,4 +35,14 @@ class LoggingConfig(Config):
         mlruns_path.mkdir(parents=True, exist_ok=True)
 
         # 4) store back the normalized path (this also helps MLflow)
-        self.mlflow_uri = str(mlruns_path)
+        # turn it into an absolute file:// URI for MLflow
+        abs_path = mlruns_path.resolve()
+        self.mlflow_uri = str(abs_path)
+
+        # point MLflow at the folder we just created
+        mlflow.set_tracking_uri(f"file://{abs_path}")
+        # ensure the experiment exists (creates it if needed)
+        mlflow.set_experiment(self.experiment_name)
+        # optionally prefix run names
+        if self.run_name_prefix:
+            self.run_name = f"{self.run_name_prefix}_{self.run_name}"
