@@ -81,7 +81,7 @@ class STDataset(torch.utils.data.Dataset):
 
     def batch_by_size(self, max_events):
         try:
-            from lib.neural_stpp.data_utils_fast import batch_by_size_fast
+            from neural_stpp.data_utils_fast import batch_by_size_fast
         except ImportError:
             raise ImportError('Please run `python setup.py build_ext --inplace`')
 
