@@ -299,11 +299,17 @@ A new synthetic data generator and additional real-world datasets will be added 
 ## Getting Started&nbsp;<a name="quick-start"></a> [[Back&nbsp;to&nbsp;Top](#top)]
 Clone locally and run:
 
-### 1 · Install (current feature branch)
+### 1 · Install from source
 
 ```bash
-pip install \
-  "git+https://github.com/YahyaAalaila/STPPGC.git@feature/lightning_stppv0.0.1#egg=lightning-stpp"
+pip install -r requirements.txt
+pip install .
+```
+
+To enable the optional Neural-STPP models:
+
+```bash
+pip install -e .[neural]
 ```
 ---
 

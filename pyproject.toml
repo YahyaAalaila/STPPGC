@@ -26,8 +26,6 @@ dependencies = [
   "tensorboard==2.18.0",
   "neural_stpp @ git+https://github.com/YahyaAalaila/neural_stpp.git@main#egg=neural_stpp",
 ]
-
-
 # FIXME
 #[project.optional-dependencies]
 # neural = [
