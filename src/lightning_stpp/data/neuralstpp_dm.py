@@ -1,5 +1,5 @@
 from .base import LightDataModule
-from lib.neural_stpp.iterators import EpochBatchIterator
+from neural_stpp.iterators import EpochBatchIterator
 import torch
 from lightning.fabric.utilities.apply_func import apply_to_collection
 
