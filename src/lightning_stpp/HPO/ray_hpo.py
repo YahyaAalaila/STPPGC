@@ -85,15 +85,24 @@ class RayTuneRunner(HyperTuner):
             )
             
             # after tune.run(), your analysis is an ExperimentAnalysis
-            best_trial = analysis.get_best_trial(
-                metric="val_loss",   # the same name you report from your Lightning callback
-                mode="min",
-            )
-            print("→ trial last_result keys:", best_trial)
+            # best_trial = analysis.get_best_trial(
+            #     metric="val_loss",   # the same name you report from your Lightning callback
+            #     mode="min",
+            # )
+            # print("→ trial last_result keys:", best_trial)
 
-            best_val = best_trial.last_result["val_loss"]         
+            # best_val = best_trial.last_result["val_loss"]         
            
-            mlflow.log_params(analysis.best_config)
+            # mlflow.log_params(analysis.best_config)
+            # mlflow.log_metric("best_val_loss", best_val)
+            # return analysis
+            best_trial = analysis.get_best_trial(metric="val_loss", mode="min")
+            print("→ trial last_result keys:", best_trial)
+            best_val = best_trial.last_result["val_loss"]         
+
+            # Get the config directly from the best_trial object you found
+            mlflow.log_params(best_trial.config)
+
             mlflow.log_metric("best_val_loss", best_val)
             return analysis
         

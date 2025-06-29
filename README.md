@@ -67,14 +67,15 @@
 <!-- ## 🗞️ News&nbsp;<a name="news"></a> -->
 ## 🗞️ News&nbsp;<a name="news"></a> [[Back&nbsp;to&nbsp;Top](#top)]
 
-- ![UPCOMING](https://img.shields.io/badge/UPCOMING-lightgrey?style=flat)&nbsp;[24-05-2025] Presentation at [Machine Learning &
+- ![NEW](https://img.shields.io/badge/NEW-red?style=flat)&nbsp; [24-05-2025] Presentation at [Machine Learning &
 Global Health Network (MLGH)](https://mlgh.net/), London, UK.
-- ![NEW](https://img.shields.io/badge/NEW-red?style=flat)&nbsp; [19-05-2025] Our recent branch with the latest features </a>
+<!-- - ![NEW](https://img.shields.io/badge/NEW-red?style=flat)&nbsp; [19-05-2025] Our recent branch with the latest features </a>
   <a href="https://github.com/YahyaAalaila/STPPGC/tree/feature/lightning_stppv0.0.1">
   <img
     src="https://img.shields.io/badge/branch-feature--lightning--stppv0.0.1-blue?style=flat-square"
     alt="branch: feature/lightning_stppv0.0.1" />
-    </a>
+    </a> -->
+- ![NEW](https://img.shields.io/badge/NEW-red?style=flat)&nbsp; [01-04-2025] Our [knowledgebase website](https://events2025.github.io/) is finally up
 
 - ![NEW](https://img.shields.io/badge/NEW-red?style=flat)&nbsp; [13-02-2025] Our review paper about [Neural Spatiotemporal Point Processes: Trends and Challenges](https://arxiv.org/abs/2502.09341) is up on [arxiv](https://arxiv.org/abs/2502.09341)
 

@@ -190,3 +190,6 @@ run_examples/
 tests/**
 !tests/config_factory/
 !tests/config_factory/test_model_config.py
+
+
+requirements.txtray_results/
