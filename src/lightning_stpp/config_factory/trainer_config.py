@@ -19,8 +19,8 @@ from ray.tune.integration.pytorch_lightning import TuneReportCheckpointCallback
 class TrainerConfig(Config):
     gpus       : int = 1
     max_epochs : int = 50
-    precision  : str = "32"
-    accelerator : str = "gpu" # "cpu", "gpu", "mps"
+    precision  : str = 32
+    accelerator : str = "cpu" # "cpu", "gpu", "mps"
     seed       : int = 42
     ckpt_dir   : str = "./checkpoints"
     save_top_k : int = 1
@@ -63,9 +63,10 @@ class TrainerConfig(Config):
     def _build_custom_callbacks(self, extra_callbacks, model_speciofic_callbacks):
         
         common_callbacks = [
-            ModelCheckpoint(dirpath= self.ckpt_dir, save_top_k  = self.save_top_k, monitor = self.monitor),
+            # ModelCheckpoint(dirpath= self.ckpt_dir, save_top_k  = self.save_top_k, monitor = self.monitor),
+            ModelCheckpoint(dirpath= self.ckpt_dir, save_top_k  = 1, monitor = "val_loss", mode="min", save_last = True),
             TrainLoggerCallback(log_every_n_steps=self.log_every_n_steps),
-            ValidationSchedulerCallback(every_n_epochs=self.check_val_every_n_epochs),
+            #ValidationSchedulerCallback(every_n_epochs=self.check_val_every_n_epochs),
             TuneReportCheckpointCallback({"val_loss": "val_loss"}, on="validation_epoch_end")
             #TestSchedulerCallback(),
         ]
@@ -88,8 +89,6 @@ class TrainerConfig(Config):
 
         # Add custom callbacks if any
         all_callbacks = self._build_custom_callbacks(extra_callbacks, model_speciofic_callbacks)
-
-        print(" ----- > All callbacks: ", all_callbacks)
         return pl.Trainer(
             max_epochs=self.max_epochs,
             accelerator=self.accelerator,
@@ -97,7 +96,8 @@ class TrainerConfig(Config):
             precision=32, #self.precision,
             logger=logger,
             callbacks=all_callbacks,
-            enable_checkpointing=True
+            enable_checkpointing=True,
+            check_val_every_n_epoch= self.check_val_every_n_epochs
             )
         
     @staticmethod

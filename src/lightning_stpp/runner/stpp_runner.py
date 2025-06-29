@@ -23,7 +23,6 @@ class Runner(BaseRunner):
         # Initialize the model based on the configuration
         model_cfg = self.config.model         
         stpp_class = BaseSTPPModule.by_name(model_cfg.model_id)
-        print("stpp_class:", stpp_class)
         self.model = stpp_class(model_cfg)
         # Initialize the corresponding datamodule
         self.datamodule = LightDataModule.build_datamodule_from_config(self.config)
@@ -32,7 +31,6 @@ class Runner(BaseRunner):
         # Implement the logic for fitting the model
         self.logger.info("Starting training...")
         self.trainer.fit(self.model, datamodule=self.datamodule)
-        print("\n\n\n SEEE HEEERRREE \n\n\n", self.trainer.callback_metrics.keys())
         
     def evaluate(self, verbose = False):
         # Implement the logic for evaluating the model

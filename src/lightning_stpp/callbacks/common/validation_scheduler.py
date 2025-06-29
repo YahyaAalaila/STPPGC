@@ -11,4 +11,5 @@ class ValidationSchedulerCallback(Callback):
         epoch = trainer.current_epoch
         if (epoch + 1) % self.every_n_epochs == 0:
             # `verbose=False` silences the extra printouts
-            trainer.validate(verbose=False)
+            #trainer.validate(verbose=False)
+            trainer.validate(ckpt_path=None, verbose=False)
