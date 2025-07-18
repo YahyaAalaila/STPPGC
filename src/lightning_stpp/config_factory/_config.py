@@ -1,12 +1,14 @@
 from __future__ import annotations
-from dataclasses import dataclass, asdict, fields, is_dataclass, replace
+from dataclasses import dataclass, asdict, field, fields, is_dataclass, replace
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any, Dict, Optional, Type
+from lightning_stpp.config_factory.aliases import infer_model_key
 from omegaconf import OmegaConf
 from pathlib import Path
 
 import yaml
 from lightning_stpp.utils.registrable import Registrable
+from ._parsing import split_search_space
 
 @dataclass
 class Config(Registrable, ABC):
@@ -81,3 +83,47 @@ class Config(Registrable, ABC):
     # nice print
     def __repr__(self):
         return OmegaConf.to_yaml(self.to_dict())
+    
+# ------------- Model base class ------------- 
+
+@dataclass
+class BaseModelConfig(Config):
+    # --- optimizer / reg common to all STPP models
+    lr: float = 1e-3
+    opt: str = "Adam"
+    momentum: float = 0.9
+    weight_decay: float = 0.0
+    dropout: float = 0.0
+
+    # --- Ray Tune space (override in subclasses!) ---
+    search_space: Optional[Dict[str, Any]] = None
+
+    # internal holder for the *actual* tunables
+    _ray_tune_space: Optional[Dict[str, Any]] = field(init=False, default=None)
+    
+    monitor    : str = "val_loss"
+    monitor_mode: str = "min"
+
+    def __post_init__(self):
+        # If a search_space dict was provided, split it into (tunables, constants)
+        if self.search_space:
+            tunables, consts = split_search_space(self.search_space, type(self))
+            # apply any constant values back into self
+            for k, v in consts.items():
+                if hasattr(self, k):
+                    setattr(self, k, v)
+            self._ray_tune_space = tunables
+            # clear the raw dict so we know we've already handled it
+            self.search_space = None
+    
+    # def finalize(self) -> None:
+    #     model_key = infer_model_key()
+    def ray_space(self) -> Dict[str, Any]:
+        """
+        Return only the tunable hyperparameters for Ray Tune.
+        Raises if no search_space was ever provided.
+        """
+        if self._ray_tune_space is None:
+            raise RuntimeError(f"No ray-space defined for {type(self).__name__}")
+        return self._ray_tune_space
+

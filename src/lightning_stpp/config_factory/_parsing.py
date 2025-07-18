@@ -5,33 +5,6 @@ from dataclasses import fields, is_dataclass
 from numbers     import Number
 from typing      import Any, Dict, Tuple, get_origin, get_args, Union
 
-
-# FIXME: This function is not used in the current codebase. 
-# It is commented out to avoid confusion, but it can be uncommented if needed.
-# It was intended to parse a DSL for Ray Tune hyperparameter search.
-# but now we use a more straightforward approach with `split_search_space`.
-
-# def parse_tune_dsl(raw: Dict[str, Any]) -> Dict[str, Any]:
-#     """
-#     Convert DSL nodes into the corresponding `ray.tune` objects.
-#     E.g. {"lr": {"loguniform": [1e-5,1e-2]}}
-#     """
-#     out: Dict[str, Any] = {}
-#     for key, spec in raw.items():
-#         if isinstance(spec, dict) and len(spec) == 1:
-#             name, args = next(iter(spec.items()))
-#             match name.lower():
-#                 case "loguniform": out[key] = tune.loguniform(*args)
-#                 case "uniform":    out[key] = tune.uniform(*args)
-#                 case "choice":     out[key] = tune.choice(args)
-#                 case "randint":    out[key] = tune.randint(*args)
-#                 case _:
-#                     raise ValueError(f"Unknown Tune op {name!r} in search_space.")
-#         else:
-#             raise TypeError(f"Malformed search_space for {key!r}: {spec}")
-#     return out
-
-
 # --------------------------------------------------------------------- #
 # 1)  Built-in Ray-Tune sampler map (unchanged)                         #
 # --------------------------------------------------------------------- #
@@ -162,3 +135,36 @@ def split_search_space(
             constants[k] = v
 
     return tunables, constants
+
+def dotlist_to_dict(dotlist) -> Dict[str, Any]:
+    """
+    Convert a list like
+        ["model.model_sub_id=att-cnf", "trainer.max_epochs=200"]
+    into a nested dict:
+        {
+          "model":   {"model_sub_id": "att-cnf"},
+          "trainer": {"max_epochs": 200},
+        }
+    Strings that look like ints or floats are cast automatically.
+    """
+    out: Dict[str, Any] = {}
+    for item in dotlist:
+        if "=" not in item:
+            raise ValueError(f"Override '{item}' must be key=value")
+        key, val = item.split("=", 1)
+
+        # naive scalar casting
+        if val.isdigit():
+            val = int(val)
+        else:
+            try:
+                val = float(val)
+            except ValueError:
+                pass  # leave as str
+
+        cur = out
+        parts = key.split(".")
+        for k in parts[:-1]:
+            cur = cur.setdefault(k, {})
+        cur[parts[-1]] = val
+    return out

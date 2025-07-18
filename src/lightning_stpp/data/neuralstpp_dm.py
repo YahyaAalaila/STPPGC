@@ -26,9 +26,10 @@ def spatiotemporal_events_collate_fn(data):
     return event_times, spatial_locations, mask.double()
 
 @LightDataModule.register("neural_stpp")
+@LightDataModule.register("neuralstpp")
 class NeuralSTPPDataModule(LightDataModule):
-    def __init__(self, data_config, model_config):
-        super().__init__(data_config, model_config)
+    def __init__(self, data_config):
+        super().__init__(data_config)
         
         #self.load_data_from_config()
         
@@ -36,24 +37,24 @@ class NeuralSTPPDataModule(LightDataModule):
         return torch.utils.data.DataLoader(
             self.training_set,
             batch_sampler = self.training_set.batch_by_size(
-                self.model_config.data_loaders["max_events"]
+                self.data_config.max_events
             ),
             collate_fn    = spatiotemporal_events_collate_fn,
-            num_workers   = self.model_config.data_loaders["num_workers"],
+            num_workers   = self.data_config.num_workers,
             persistent_workers=True,   # keeps workers alive across epochs
         )
 
     def val_dataloader(self):
         return torch.utils.data.DataLoader(
             self.validation_set,
-            batch_size=self.model_config.data_loaders["val_bsz"],
+            batch_size=self.data_config.val_bsz,
             shuffle=False,
             collate_fn=spatiotemporal_events_collate_fn,
         )
     def test_dataloader(self):
         return torch.utils.data.DataLoader(
             self.testing_set,
-            batch_size=self.model_config.data_loaders["test_bsz"],
+            batch_size=self.data_config.test_bsz,
             shuffle=False,
             collate_fn=spatiotemporal_events_collate_fn,
         )

@@ -9,9 +9,9 @@ data:
 
 # --- MODEL ---------------------------------------------------------------
 model:
-    model_id          : "neural_stpp"  # or "att-cnf", "cond_gmm"
+    #model_id          : "neural_stpp"  # or "att-cnf", "cond_gmm"
     model_sub_id      : "jump-cnf"
-    model_config      : "neuralstpp"
+    #model_config      : "neuralstpp"
     t0                : 0.0
     t1                : 30.0
     dim               :  2

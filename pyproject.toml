@@ -27,6 +27,7 @@ dependencies = [
   "mlflow==2.21.0",
   "tensorboard==2.18.0",
   "neural_stpp @ git+https://github.com/YahyaAalaila/neural_stpp.git@main#egg=neural_stpp",
+  "deepstpp @ git+https://github.com/YahyaAalaila/DeepSTPP.git@master#egg=deepstpp",
 ]
 [tool.setuptools]              #  New
 package-dir = {"" = "src"}     #  New

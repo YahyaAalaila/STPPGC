@@ -12,24 +12,24 @@ class Runner(BaseRunner):
     def __init__(self, cfg):
         super().__init__(cfg)
         self.config = cfg
-        self._inititialize_model()
+        self._init_model()
         self._setup_logger()
         # build trainer friom model config
         self.trainer = cfg.trainer.build_pl_trainer(
-            logger = self.mlflow_logger,
-            extra_callbacks = cfg.trainer.custom_callbacks,
-            model_speciofic_callbacks= self.model.callbacks(), # build callbacks that might be specific to the model
-            )
+                        logger = self.mlflow_logger,
+                        #extra_callbacks = cfg.trainer.custom_callbacks,
+                        model_speciofic_callbacks= self.model.callbacks(), # build callbacks that might be specific to the model
+                        )
     
 
-    def _inititialize_model(self):
+    def _init_model(self):
         # Initialize the model based on the configuration
-        model_cfg = self.config.model         
+        model_cfg = self.config.model 
         stpp_class = BaseSTPPModule.by_name(model_cfg.model_id)
-        self.model = stpp_class(model_cfg)
+        self.model = stpp_class(self.config.model, self.config.data)
         # Initialize the corresponding datamodule
         self.datamodule = LightDataModule.build_datamodule_from_config(self.config)
-
+        
     def fit(self):
         # Implement the logic for fitting the model
         self.logger.info("Starting training...")

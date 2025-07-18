@@ -1,0 +1,3 @@
+mlflow_uri:      "./mlruns"
+experiment_name: "PinwheelHawkes_neural_sweep"
+run_name:        "sweep_parent"

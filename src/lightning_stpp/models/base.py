@@ -3,7 +3,9 @@ import torch.nn.functional as F
 from abc import ABC, abstractmethod
 
 from lightning_stpp.config_factory._config import Config
+
 from lightning_stpp.utils.registrable import Registrable
+from lightning_stpp.config_factory.data_config import DataConfig
 
 class BaseSTPPModule(pl.LightningModule, Registrable, ABC):
     """
@@ -11,9 +13,10 @@ class BaseSTPPModule(pl.LightningModule, Registrable, ABC):
     Subclasses must implement the forward() method and can override training_step() and validation_step()
     if needed for custom behavior.
     """
-    def __init__(self, cfg: Config):
+    def __init__(self, cfg: Config, data_cfg: DataConfig):
         super().__init__()
         self.model_cfg = cfg
+        self.data_cfg = data_cfg
         self.float()
         # Save hyperparameters for easy access and logging
         self.save_hyperparameters(self.model_cfg.to_hparams())

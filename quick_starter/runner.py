@@ -7,8 +7,8 @@ torch.set_default_dtype(torch.float32)
 def main(cfg_path: str):
     # Load the configuration
     cfg = load_and_finalize(cfg_path)
-    print("cfg:", cfg.hpo)
     
+    #print("Final cfg.model:", cfg.model)
     if cfg.hpo is not None:
         from lightning_stpp.HPO.hpo_base import HyperTuner
         from lightning_stpp.utils.save import save_analysis

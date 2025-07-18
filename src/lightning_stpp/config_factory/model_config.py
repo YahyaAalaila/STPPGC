@@ -1,19 +1,22 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict
-from ._config import Config
-import ray
+
+from ._config import BaseModelConfig
 from ._parsing import split_search_space
 
-    
+# --------- NeuralSTPPConfig --------- #
+# This is a configuration class for the NeuralSTPP model, which is a specific type of
+# spatiotemporal point process model. It inherits from the base ModelConfig and includes
+# various parameters that define the model architecture, training specifics, and regularization settings.
    
-@Config.register("neuralstpp")   
+@BaseModelConfig.register("neuralstpp")   
 @dataclass      
-class NeuralSTPPConfig(Config):
+class NeuralSTPPConfig(BaseModelConfig):
     """
     Configuration class for NeuralSTPP models.
     Inherits from ModelConfig and adds additional parameters specific to NeuralSTPP.
     """
-    model_id          : str = "neuralstpp"  # or "att-cnf", "cond-gmm"
+    model_id          : str = None
     model_sub_id      : str = "jump-cnf"  # or "att-cnf", "cond_gmm"
     dim               : int = 2
     t0                : float = 0.0
@@ -35,11 +38,11 @@ class NeuralSTPPConfig(Config):
     lowvar_trace      : bool     = False
     search_space      : Dict[str, Any] = field(default_factory=dict)
     
-    lr                : float    = 1e-3
+    #lr                : float    = 1e-3
     warmup_itrs      : int      = 1000
     num_iterations     : int      = 10000
-    momentum           : float    = 0.9
-    weight_decay       : float    = 0.0
+    #momentum           : float    = 0.9
+    #weight_decay       : float    = 0.0
     gradclip           : float    = 1.0
     max_events         : int      = 1000
     data_loaders      : Dict[str, Any] = field(default_factory=dict)
@@ -107,3 +110,69 @@ class NeuralSTPPConfig(Config):
             return JumpGMMSpatiotemporalModel(**self.shared_model_kwargs).float()
         else:
             raise ValueError(f"Unknown NeuralSTPP variant {self.model_sub_id!r}")
+        
+        
+# --------- DeepSTPPConfig --------- #
+# This is a configuration class for the DeepSTPP model, which is a specific type of
+# spatiotemporal point process model. It inherits from the base Config class and
+# includes various parameters that define the model architecture, inference specifics,
+# training and evaluation hooks, and regularization settings.
+
+@BaseModelConfig.register("deepstpp")
+@dataclass
+class DeepSTPPConfig(BaseModelConfig):
+    """
+    Config for the DeepSTPP model.
+    Inherits common optimizer fields (lr, opt, momentum, weight_decay, dropout).
+    """
+    # — model id for registry —
+    model_id       : str   = "deepstpp"
+
+    # — architecture —
+    emb_dim        : int   = 128
+    hid_dim        : int   = 128
+    z_dim          : int   = 128
+    num_head       : int   = 2
+    nlayers        : int   = 3
+    num_points     : int   = 20
+    seq_len        : int   = 20
+    decoder_n_layer: int   = 3
+
+    # — inference specifics —
+    infer_nstep    : int   = 10000
+    infer_limit    : int   = 13
+
+    # — training/eval hooks (kept small since epochs live in TrainerConfig) —
+    eval_epoch     : int   = 5
+    lookahead      : int   = 1
+    scheduler      : str   = None
+    generate_type  : bool  = True
+    read_model     : bool  = False
+    sample         : bool  = False
+
+    # — regularisation —
+    beta           : float = 1e-3
+    constrain_b    : str = "sigmoid"
+    s_min          : float = 1e-3
+    b_max          : int = 20
+    
+    def __post_init__(self):
+        # Ensure that the model_id is valid
+        if self.model_id != "deepstpp":
+            raise ValueError(f"Unknown DeepSTPP variant {self.model_id!r}")
+        
+        # Additional validation or preparation can be done here if needed
+        if not isinstance(self.num_points, int) or self.num_points <= 0:
+            raise ValueError("num_points must be a positive integer")
+        
+        
+        if self.search_space:
+            tunables, constants = split_search_space(self.search_space, type(self))
+            for k, v in constants.items():
+                if hasattr(self, k):
+                    setattr(self, k, v)
+            self._ray_tune_space = tunables
+            self.search_space = None 
+    def ray_space(self):
+        return self._ray_tune_space
+

@@ -8,12 +8,13 @@ import torch.nn as nn
 from torchmetrics.classification import MulticlassAccuracy
 
 @BaseSTPPModule.register(name="neural_stpp")
+@BaseSTPPModule.register("neuralstpp") 
 class NeuralSTPP(BaseSTPPModule):
-    def __init__(self, cfg):
-        super().__init__(cfg)
-        self.t0 = cfg.t0
-        self.t1 = cfg.t1
-        self.net = cfg.build_model()
+    def __init__(self, model_cfg, data_cfg):
+        super().__init__(model_cfg, data_cfg)
+        self.t0 = model_cfg.t0
+        self.t1 = model_cfg.t1
+        self.net = model_cfg.build_model()
         self.float()
                 
         # Split parameters for possible different treatment.
@@ -64,7 +65,7 @@ class NeuralSTPP(BaseSTPPModule):
     def configure_optimizers(self):
         
         N = len(self.trainer.datamodule.training_set)
-        bs = self.model_cfg.data_loaders["train_bsz"]
+        bs = self.data_cfg.train_bsz
         batches_per_epoch = math.ceil(N / bs)
 
         num_iters = self.hparams.num_iterations

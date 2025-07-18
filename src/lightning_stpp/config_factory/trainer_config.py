@@ -3,15 +3,13 @@ from dataclasses import dataclass, field
 import logging
 from pathlib import Path
 from typing import Any, List, Dict
+
 import lightning as pl
 
 import torch
-from lightning.pytorch.callbacks import ModelCheckpoint
 from ._config import Config
 from lightning_stpp.callbacks.common.train_logger import TrainLoggerCallback
-from lightning_stpp.callbacks.common.validation_scheduler import ValidationSchedulerCallback
-from lightning_stpp.callbacks.common.test_scheduler import TestSchedulerCallback 
-from ray.tune.integration.pytorch_lightning import TuneReportCheckpointCallback
+
 
 
 @Config.register("trainer_config")
@@ -26,7 +24,6 @@ class TrainerConfig(Config):
     save_top_k : int = 1
     log_every_n_steps : int = 1
     check_val_every_n_epochs : int = 1
-    monitor    : str = "val_loss"
     resume_from : str | None = None
     custom_callbacks : List[Dict[str, Any]] = field(default_factory=list) # (YA) Added this to allow custom callbacks in the building of pl.Trainer!
     
@@ -63,22 +60,19 @@ class TrainerConfig(Config):
     def _build_custom_callbacks(self, extra_callbacks, model_speciofic_callbacks):
         
         common_callbacks = [
-            # ModelCheckpoint(dirpath= self.ckpt_dir, save_top_k  = self.save_top_k, monitor = self.monitor),
-            ModelCheckpoint(dirpath= self.ckpt_dir, save_top_k  = 1, monitor = "val_loss", mode="min", save_last = True),
             TrainLoggerCallback(log_every_n_steps=self.log_every_n_steps),
-            #ValidationSchedulerCallback(every_n_epochs=self.check_val_every_n_epochs),
-            TuneReportCheckpointCallback({"val_loss": "val_loss"}, on="validation_epoch_end")
-            #TestSchedulerCallback(),
         ]
-        # Create custom callbacks if any
-        dynamic_callbacks_from_yaml = []
-        for cf_cfg in self.custom_callbacks:
-            cls = self._locate_class(cf_cfg.class_path)
+
+        for cb_spec in self.custom_callbacks:
+            # cb_spec is now a dict with keys "class_path" and optional "init_params"
+            class_path = cb_spec["class_path"]
+            init_args  = cb_spec.get("init_params", {})
+            cls = self._locate_class(class_path)
             if cls is None:
-                raise ValueError(f"Class {cf_cfg['class_path']} not found.")
-            dynamic_callbacks_from_yaml.append(cls(**cf_cfg.get("init_params", {})))
-        
-        all_callbacks = common_callbacks + dynamic_callbacks_from_yaml + (extra_callbacks or []) + (model_speciofic_callbacks or [])
+                raise ValueError(f"Callback class '{class_path}' not found.")
+            common_callbacks.append(cls(**init_args))
+            
+        all_callbacks = common_callbacks + (extra_callbacks or []) + (model_speciofic_callbacks or [])
         return all_callbacks
     def ray_space(self):
         # Add ray tunable parameters here if needed
