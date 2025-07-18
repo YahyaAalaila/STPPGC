@@ -1,1 +1,2 @@
 from .neuralstpp_dm import NeuralSTPPDataModule
+from .deepstpp_dm import DeepSTPPDataModule

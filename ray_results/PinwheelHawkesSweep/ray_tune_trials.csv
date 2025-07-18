@@ -1,0 +1,2 @@
+val_loss,timestamp,checkpoint_dir_name,should_checkpoint,done,training_iteration,date,time_this_iter_s,time_total_s,pid,hostname,node_ip,time_since_restore,iterations_since_restore,experiment_tag,config/lr
+194.85577392578125,1752698883,checkpoint_000000,True,True,1,2025-07-16_22-48-03,1002.3745980262756,1002.3745980262756,41918,port-10080872,127.0.0.1,1002.3745980262756,1,0_lr=0.0006,0.0006106683653442278

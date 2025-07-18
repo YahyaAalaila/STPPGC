@@ -7,10 +7,14 @@ from typing      import List
 
 import lightning as pl
 
-from ._config          import Config
-from .runner_config import RunnerConfig
-from .logger_config import LoggingConfig         # ➊ small helper dataclass (see note)
-from .hypertuning_config import HPOConfig       # ➋ small helper dataclass (see note)
+from ._config          import Config  
+from lightning_stpp.config_factory import (
+
+    LoggingConfig,
+    HPOConfig,
+    RunnerConfig,
+    Config,
+)# ➋ small helper dataclass (see note)
 
 # ────────────────────────────────────────────────────────────────────────────
 @Config.register("benchmark_config")

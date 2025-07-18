@@ -40,11 +40,14 @@ class HPOConfig(Config):
             self.results_dir = None  # let Ray pick ~/ray_results
         
         
-    def make_scheduler(self, max_t: int):
+    def make_scheduler(self, 
+                       tuning_mtric: str,
+                       tuning_mode: str,
+                       max_train_it: int):
         """
         Create a scheduler based on the specified type.
         Args:
-            max_t (int): Maximum number of trials.
+            max_train_it (int): Maximum number of trials.
         Returns:
             Scheduler: A scheduler object based on the specified type.
         """
@@ -52,49 +55,56 @@ class HPOConfig(Config):
         if self.scheduler == "asha":
             # ASHA scheduler
             from ray.tune.schedulers import ASHAScheduler
+            
             return ASHAScheduler(
-                metric="val_loss",
-                mode="min",
-                max_t=max_t,
+                metric=tuning_mtric,
+                mode=tuning_mode,
+                max_t=max_train_it,
                 grace_period=1,
                 reduction_factor=2,
             )
         elif self.scheduler == "fifo":
             # FIFO scheduler
             from ray.tune.schedulers import FIFOScheduler
+            
             return FIFOScheduler(
-                metric="val_loss",
-                mode="min",
+                metric=tuning_mtric,
+                mode=tuning_mode,
             )
         elif self.scheduler == "hyperband":
             # Hyperband scheduler
             from ray.tune.schedulers import HyperBandScheduler
+            
             return HyperBandScheduler(
-                metric="val_loss",
-                mode="min",
-                max_t=max_t,
+                metric=tuning_mtric,
+                mode=tuning_mode,
+                max_t=max_train_it,
                 grace_period=1,
                 reduction_factor=3,
             )
         elif self.scheduler == "pbt":
             # Population Based Training (PBT) scheduler
             from ray.tune.schedulers import PopulationBasedTraining
+            
             return PopulationBasedTraining(
-                metric="val_loss",
-                mode="min",
+                metric=tuning_mtric,
+                mode=tuning_mode,
                 perturbation_interval=10
             )
         elif self.scheduler == "median":
             # Median scheduler
             from ray.tune.schedulers import MedianStoppingRule
+            
             return MedianStoppingRule(
-                metric="val_loss",
-                mode="min",
+                metric=tuning_mtric,
+                mode=tuning_mode,
                 patience=5,
             )
         raise ValueError(f"Unknown scheduler type: {self.scheduler}")
     
-    def make_search_alg(self):
+    def make_search_alg(self,
+                        tuning_mtric: str,
+                        tuning_mode: str):
         """
         Create a search algorithm based on the specified type.
         Args:
@@ -104,25 +114,51 @@ class HPOConfig(Config):
         """
         if self.search_algorithm == "random":
             from ray.tune.search.basic_variant  import BasicVariantGenerator
+            
             return BasicVariantGenerator()
         if self.search_algorithm == "hyperopt":
             from ray.tune.search.hyperopt  import HyperOptSearch
-            return HyperOptSearch(metric="val_loss", mode="min")
+            
+            return HyperOptSearch(
+                metric=tuning_mtric,
+                mode=tuning_mode
+                )
         if self.search_algorithm == "optuna":
             from ray.tune.search.optuna import OptunaSearch
-            return OptunaSearch(metric="val_loss", mode="min", sampler="TPE")
+            
+            return OptunaSearch(
+                metric=tuning_mtric,
+                mode=tuning_mode,
+                sampler="TPE"
+                )
         if self.search_algorithm == "nevergrad":
             from ray.tune.search.nevergrad import NevergradSearch
-            return NevergradSearch(metric="val_loss", mode="min")
+            
+            return NevergradSearch(
+                metric=tuning_mtric,
+                mode=tuning_mode
+                )
         if self.search_algorithm == "bohb":
             from ray.tune.search.bohb import TuneBOHB
-            return TuneBOHB(metric="val_loss", mode="min")
+            
+            return TuneBOHB(
+                metric=tuning_mtric,
+                mode=tuning_mode
+                )
         if self.search_algorithm == "hebo":
             from ray.tune.search.hebo import HEBOSearch
-            return HEBOSearch(metric="val_loss", mode="min")
+            
+            return HEBOSearch(
+                metric=tuning_mtric,
+                mode=tuning_mode
+                )
         if self.search_algorithm == "ax":
             from ray.tune.search.ax import AxSearch
-            return AxSearch(metric="val_loss", mode="min")
+            
+            return AxSearch(
+                metric=tuning_mtric,
+                mode=tuning_mode
+                )
         raise ValueError(f"Unknown search algorithm: {self.search_algorithm}")
 
 

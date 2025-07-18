@@ -1,23 +1,20 @@
 import lightning as pl
 
 from lightning_stpp.config_factory.data_config import DataConfig
-from lightning_stpp.config_factory.model_config import NeuralSTPPConfig
 from lightning_stpp.config_factory.runner_config import RunnerConfig
 from lightning_stpp.utils.registrable import Registrable
 from .datasets import STDataset
-from torch.utils.data import DataLoader, TensorDataset
 from lightning_stpp.utils.data import Float32Wrapper
 
 class LightDataModule(pl.LightningDataModule, Registrable):
-    def __init__(self, data_config: DataConfig, model_config: NeuralSTPPConfig):
+    def __init__(self, data_config: DataConfig):
         super().__init__()
         self.data_config  = data_config
-        self.model_config = model_config
     
     @classmethod
     def build_datamodule_from_config(cls, runner_cfg: RunnerConfig):
         dm_cls = cls.by_name(runner_cfg.model.model_id.lower())
-        return dm_cls(runner_cfg.data, runner_cfg.model)
+        return dm_cls(runner_cfg.data)
     
     def prepare_data(self):
         """

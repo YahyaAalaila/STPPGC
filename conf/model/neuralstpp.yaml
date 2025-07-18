@@ -1,0 +1,30 @@
+defaults:
+  - /data: pinwheel
+  - _self_
+
+model_sub_id: jump-cnf
+
+search_space:
+  hdims:             [64, 64, 64]
+  tpp_hidden_dims:   [8, 20]
+  actfn:             "softplus"
+  tpp_cond:          false
+  tpp_style:         "split"
+  tpp_actfn:         "softplus"
+  share_hidden:      false
+  solve_reverse:     false
+  l2_attn:           false
+  tol:               0.001
+  otreg_strength:    0.0
+  tpp_otreg_strength: 0.0
+  layer_type:        "concat"
+  naive_hutch:       false
+  lowvar_trace:      false
+
+  lr:                [1e-3, 1e-5]
+  warmup_itrs:       2
+  num_iterations:    10
+  momentum:          0.9
+  weight_decay:      0.0
+  gradclip:          1.0
+  max_events:        100

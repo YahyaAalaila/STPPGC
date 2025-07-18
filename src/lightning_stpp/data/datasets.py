@@ -116,6 +116,12 @@ class PinwheelHawkes(STDataset):
         train_set = [generate(mhp, data_fn, ndim=2, num_classes=num_classes) for _ in range(num_train)]
         val_set = [generate(mhp, data_fn, ndim=2, num_classes=num_classes) for _ in range(num_val)]
         test_set = [generate(mhp, data_fn, ndim=2, num_classes=num_classes) for _ in range(num_test)]
+        
+        # each seq is an (N,3) array; stack them and find feature‐wise extrema
+        all_train = torch.cat([torch.tensor(seq) for seq in train_set], dim=0).float()
+        # save as attributes for the DataModule to pick up:
+        self.min = all_train.min(dim=0).values   # shape [3]
+        self.max = all_train.max(dim=0).values   # shape [3]
 
         split_set = {
             "train": train_set,

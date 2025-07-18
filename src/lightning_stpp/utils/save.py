@@ -17,13 +17,13 @@ def save_analysis(analysis: ExperimentAnalysis, results_dir: str):
 
     # Now, use the sanitized 'clean_path' for all filesystem operations
     os.makedirs(clean_path, exist_ok=True)
-    print(f"✅ Directory confirmed/created: {clean_path}")
+    print(f"Directory confirmed/created: {clean_path}")
 
     # 1) Save all trial results to CSV
     df = analysis.results_df
     csv_path = os.path.join(clean_path, "ray_tune_trials.csv")
     df.to_csv(csv_path, index=False)
-    print(f"✅ Saved all trials to: {csv_path}")
+    print(f"Saved all trials to: {csv_path}")
 
     # 2) Save the best hyper-parameters to YAML
     try:
@@ -31,8 +31,8 @@ def save_analysis(analysis: ExperimentAnalysis, results_dir: str):
         yaml_path = os.path.join(clean_path, "best_config.yaml")
         with open(yaml_path, "w") as f:
             yaml.dump(best_cfg, f)
-        print(f"✅ Saved best config to: {yaml_path}")
+        print(f"Saved best config to: {yaml_path}")
     except ValueError as e:
-        print(f"⚠️ Could not save best_config automatically: {e}")
+        print(f"Could not save best_config automatically: {e}")
 
     print(f"[save_analysis] Analysis saving complete.")

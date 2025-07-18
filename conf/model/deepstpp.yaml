@@ -1,0 +1,47 @@
+# conf/model/deepstpp.yaml
+defaults:
+  - /data: pinwheel        # or whatever your dataset fragment is
+  - _self_
+
+model_id: "deepstpp"
+monitor: "val/nelbo"
+monitor_mode: "min"
+search_space:
+  # ———————————————— DeepSTPP hyper‐parameters ————————————————————
+  emb_dim:        128
+  hid_dim:        128
+  z_dim:          128
+  num_head:       2
+  nlayers:        3
+  num_points:     20
+
+  # how many MC‐steps / grid‐points for inference
+  infer_nstep:    10000
+  infer_limit:    13
+
+  # how many events to condition on
+  seq_len:        20 
+  decoder_n_layer: 3      
+
+  # how often to eval/log intensity / metrics
+  eval_epoch:     5
+  lookahead:      1
+
+  # sampling vs analytic output
+  generate_type:  true
+  read_model:     false
+  sample:         false
+
+  # ————————————— Shared optimizer / reg from BaseModelConfig ————————
+  lr:             0.0003
+  opt:            "Adam"
+  momentum:       0.9
+  weight_decay:   0.0
+  dropout:        0.0
+
+  # ——————————————————— additional DeepSTPP‐specific reg ————————————
+  beta:           0.001
+  constrain_b:   "sigmoid"
+  s_min:          1e-3
+  b_max:          20
+

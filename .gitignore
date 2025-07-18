@@ -193,3 +193,9 @@ tests/**
 
 
 requirements.txtray_results/
+
+
+utils/evaluation.py
+archive/
+outputs/
+quick_starter/

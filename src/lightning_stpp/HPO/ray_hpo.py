@@ -1,11 +1,12 @@
+from pprint import pprint
 import mlflow
 from ray import tune
 import os
 from ray.tune.context import get_context
 
-from lightning_stpp.config_factory.model_config import NeuralSTPPConfig
-from lightning_stpp.HPO.hpo_base import HyperTuner
-from lightning_stpp.runner._runner import BaseRunner
+from lightning_stpp.config_factory import NeuralSTPPConfig
+from lightning_stpp.HPO import HyperTuner
+from lightning_stpp.runner import BaseRunner
 
 
 @HyperTuner.register(name='ray_tune')
@@ -75,30 +76,34 @@ class RayTuneRunner(HyperTuner):
                 trainable,
                 config=self._search_space(),
                 num_samples=self.hpo_config.num_trials,
-                search_alg = self.hpo_config.make_search_alg(),
-                scheduler = self.hpo_config.make_scheduler(10),
+                search_alg = self.hpo_config.make_search_alg(
+                    tuning_mtric = self.runner_config.model.monitor,
+                    tuning_mode = self.runner_config.model.monitor_mode
+                    ),
+                scheduler = self.hpo_config.make_scheduler(
+                    tuning_mtric = self.runner_config.model.monitor,
+                    tuning_mode = self.runner_config.model.monitor_mode,
+                    max_train_it = self.runner_config.trainer.max_epochs
+                    ),
                 resources_per_trial=self.hpo_config.resources,
                 storage_path=self.hpo_config._dir_setup(),
-                max_concurrent_trials=1,
+                max_concurrent_trials=1, # TODO: MAke this somewhat automatic based on available ressources
                 name=self.hpo_config.experiment_name,
-                verbose=3
+                verbose=1
             )
             
-            # after tune.run(), your analysis is an ExperimentAnalysis
-            # best_trial = analysis.get_best_trial(
-            #     metric="val_loss",   # the same name you report from your Lightning callback
-            #     mode="min",
-            # )
-            # print("→ trial last_result keys:", best_trial)
+            
+            best_trial = analysis.get_best_trial(
+                metric=self.runner_config.model.monitor,
+                mode=self.runner_config.model.monitor_mode
+                )
+            
 
-            # best_val = best_trial.last_result["val_loss"]         
-           
-            # mlflow.log_params(analysis.best_config)
-            # mlflow.log_metric("best_val_loss", best_val)
-            # return analysis
-            best_trial = analysis.get_best_trial(metric="val_loss", mode="min")
-            print("→ trial last_result keys:", best_trial)
-            best_val = best_trial.last_result["val_loss"]         
+            print("🕵️‍♂️ best_trial.last_result keys:")
+            pprint(best_trial.last_result.keys())
+            print("🕵️‍♂️ full last_result dict:")
+            pprint(best_trial.last_result)
+            best_val = best_trial.last_result[self.runner_config.model.monitor]          
 
             # Get the config directly from the best_trial object you found
             mlflow.log_params(best_trial.config)

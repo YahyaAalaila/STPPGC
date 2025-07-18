@@ -1,0 +1,8 @@
+defaults:
+  - data:    pinwheel
+  - model:   neuralstpp
+  - trainer: default
+  - logging: default
+  - hpo:     default
+
+runner_id: dl_stpp
