@@ -10,21 +10,16 @@ class DataConfig(Config):
     #num_marks: int
     batch_size: int = 128
     max_events: int = 1024
+    log_normalisation: float = 1
+    ddim: int = 3
     # FIXME: Add more dataset specific parameters and decide what to put in 
     train_bsz:  int = 16
     val_bsz:    int = 64
     test_bsz:   int = 64
     num_workers: int = 8
     max_events: int | None = 4096      # optional event-count sampler
-    # path         : str
-    batch_size   : int = 128
-    # max_events   : int = 1024   # used by Neural‑STPP sampler
-    # def __post_init__(self):
-    #     #field level validation. TODO: Add all relevant validation steps
-    #     if self.batch_size <= 0:
-    #         raise ValueError("Batch size must be positive.")
-    #     if self.max_events <= 0:
-    #         raise ValueError("Max events must be positive.")
-        
-    #     if not Path(self.path).exists():
-    #         raise FileNotFoundError(f"Dataset path {self.path} does not exist.")
+    
+    def __post_init__(self):
+        if self.ddim not in [1, 2, 3]:
+            ValueError("Number of dim must be in [1, 2, 3].")
+            

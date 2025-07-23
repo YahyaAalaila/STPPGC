@@ -1,0 +1,19 @@
+defaults:
+  - /data: pinwheel
+  - _self_
+
+model_id     : smash
+
+search_space:       # (auto-filled by infer_model_key)
+  dim          : 2
+  cond_dim     : 64
+  num_types    : 1
+  sigma_time   : 0.05
+  sigma_loc    : 0.05
+  samplingsteps: 500
+  n_samples    : 100
+  langevin_step: 0.005
+  loss_lambda  : 0.5
+  loss_lambda2 : 1.0
+  smooth       : 0.0
+  total_epochs: 50

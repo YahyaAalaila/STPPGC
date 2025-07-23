@@ -1,11 +1,8 @@
+import torch
 import math
+
 from .base import BaseSTPPModule
 from lightning_stpp.utils.lr_schedules import lr_warmup_cosine
-from neural_stpp.models import JumpCNFSpatiotemporalModel
-
-import torch
-import torch.nn as nn
-from torchmetrics.classification import MulticlassAccuracy
 
 @BaseSTPPModule.register(name="neural_stpp")
 @BaseSTPPModule.register("neuralstpp") 
