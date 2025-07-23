@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import hydra
 from omegaconf import DictConfig, OmegaConf
-import pprint
 
 from lightning_stpp.config_factory.runner_config import RunnerConfig
 from lightning_stpp.HPO.hpo_base import HyperTuner
+
 
 @hydra.main(
     version_base=None,             # Hydra 1.1 defaults

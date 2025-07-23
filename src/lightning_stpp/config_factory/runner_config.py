@@ -49,7 +49,6 @@ class RunnerConfig(Config):
         # Make sure ModelCheckpoint is included in the callbakcs, which is extremely important, that is why it is included here.
         common_cbs = self._set_common_callbacks()
         self.trainer.custom_callbacks[0:0] = common_cbs
-        print(f"[DEBUG -- finalise]  --self.trainer.custom_callbacks:  {self.trainer.custom_callbacks}")
         # Maybe cross check for model<>data compatibility, for now I can only think of number of event types.
         # TODO: If usefull, implement it later
         
