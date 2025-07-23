@@ -199,3 +199,4 @@ utils/evaluation.py
 archive/
 outputs/
 quick_starter/
+ray_results/
