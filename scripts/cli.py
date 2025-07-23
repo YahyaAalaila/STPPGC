@@ -5,22 +5,6 @@ import pprint
 
 from lightning_stpp.config_factory.runner_config import RunnerConfig
 from lightning_stpp.HPO.hpo_base import HyperTuner
-import torch, traceback
-
-# keep a reference to the real .to
-_orig_to = torch.Tensor.to
-
-def _debug_to(self, *args, **kwargs):
-    # only trigger on float64
-    if self.dtype == torch.float64:
-        print("⚠️ Converting a float64 tensor to device/mode:", args, kwargs)
-        print("   shape:", tuple(self.shape))
-        traceback.print_stack(limit=8)
-    return _orig_to(self, *args, **kwargs)
-
-# Monkey–patch!
-torch.Tensor.to = _debug_to
-
 
 @hydra.main(
     version_base=None,             # Hydra 1.1 defaults
