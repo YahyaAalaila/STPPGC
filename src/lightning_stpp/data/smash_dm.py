@@ -13,7 +13,7 @@ class _SMASHSeqDataset(torch.utils.data.Dataset):
     stores train-set min/max for later de-normalisation.
     """
     def __init__(self, seqs: list[np.ndarray], log_norm: bool):
-        # ①  augment every sequence
+        # augment every sequence
         def _augment(seq: list[list[float]], log_norm):
                 out = []
                 for k, e in enumerate(seq):
@@ -26,9 +26,8 @@ class _SMASHSeqDataset(torch.utils.data.Dataset):
                      for s in seqs]
         
 
-        # ②  global min/max across ALL dims except the absolute-time column
+        # global min/max across ALL dims except the absolute-time column
         full = torch.tensor(np.concatenate(self.seqs, 0), dtype=torch.float32) 
-        print("[DEBUG -- _SMASHSeqDataset]", full.dtype)
         self.min = full.min(0).values       # [D+2]
         self.max = full.max(0).values
         
