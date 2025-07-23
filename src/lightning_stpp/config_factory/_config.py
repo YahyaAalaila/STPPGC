@@ -107,14 +107,12 @@ class BaseModelConfig(Config):
     def __post_init__(self):
         # If a search_space dict was provided, split it into (tunables, constants)
         if self.search_space:
-            tunables, consts = split_search_space(self.search_space, type(self))
-            # apply any constant values back into self
-            for k, v in consts.items():
+            tunables, constants = split_search_space(self.search_space, type(self))
+            for k, v in constants.items():
                 if hasattr(self, k):
                     setattr(self, k, v)
             self._ray_tune_space = tunables
-            # clear the raw dict so we know we've already handled it
-            self.search_space = None
+            self.search_space = None 
     
     # def finalize(self) -> None:
     #     model_key = infer_model_key()

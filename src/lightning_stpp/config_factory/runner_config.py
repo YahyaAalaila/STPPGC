@@ -25,12 +25,11 @@ class RunnerConfig(Config):
     @classmethod
     def from_dict(cls, raw: dict) -> "RunnerConfig":
         model_dict = raw.setdefault("model", {})
-        model_key = infer_model_key(model_dict) 
+        model_key = model_dict.get("model_id", infer_model_key(model_dict))
         model_dict["model_id"] = model_key
         # let base-class build everything it can
         common = super().from_dict(raw)      
-        #model_key = infer_model_key(model_dict)  # e.g. "neuralstpp"
-        mdl_cls     = Config.by_name(model_key)              # returns NeuralSTPPConfig
+        mdl_cls     = Config.by_name(model_key)             
         common.model   = mdl_cls.from_dict(model_dict)  
         common.model.model_id = model_key  
         return common

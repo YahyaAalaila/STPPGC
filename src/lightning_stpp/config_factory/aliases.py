@@ -26,6 +26,7 @@ MODEL_ALIASES = {
     "deepstpp":  "deepstpp", 
     "deep-stpp": "deepstpp",
     "DeepSTPP":  "deepstpp",
+    
 }
 
 def infer_model_key(model_dict: Dict[str, Any]) -> str:
