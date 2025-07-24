@@ -28,7 +28,8 @@ dependencies = [
   "tensorboard==2.18.0",
   "neural_stpp @ git+https://github.com/YahyaAalaila/neural_stpp.git@main#egg=neural_stpp",
   "deepstpp @ git+https://github.com/YahyaAalaila/DeepSTPP.git@master#egg=deepstpp",
-  "smash @ git+https://github.com/YahyaAalaila/SMASH.git@main#egg=smash"
+  "smash @ git+https://github.com/YahyaAalaila/SMASH.git@main#egg=smash",
+  "diffstpp @ git+https://github.com/YahyaAalaila/DiffSTPP.git@main#egg=diffstpp"
 ]
 [tool.setuptools]              #  New
 package-dir = {"" = "src"}     #  New
