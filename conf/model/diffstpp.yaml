@@ -1,0 +1,18 @@
+defaults:
+  - /data: pinwheel
+  - _self_
+
+model_id     : diffstpp
+
+search_space:       # (auto-filled by infer_model_key)
+  dim          : 2
+  cond_dim     : 64
+  num_types    : 1
+  samplingsteps: 100
+  total_epochs: 50
+  timesteps: 100
+  beta_schedule: cosine
+  loss_type: l2
+  objective: pred_noise
+
+

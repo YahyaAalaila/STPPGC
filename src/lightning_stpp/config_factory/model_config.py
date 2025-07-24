@@ -176,23 +176,47 @@ class DeepSTPPConfig(BaseModelConfig):
     def ray_space(self):
         return self._ray_tune_space
     
-    @BaseModelConfig.register("smash")
-    @dataclass
-    class SMASHConfig(BaseModelConfig):
-        model_id         : str = "smash"
+@BaseModelConfig.register("smash")
+@dataclass
+class SMASHConfig(BaseModelConfig):
+    model_id         : str = "smash"
+    
+    dim              : int = 2
+    cond_dim         : int = 64
+    num_types        : int = 1
+    sigma_time   : float = 0.05
+    sigma_loc    : float = 0.05
+    samplingsteps: int = 500
+    n_samples    : int = 100
+    langevin_step: float = 0.005
+    loss_lambda  : float = 0.5
+    loss_lambda2 : float = 1.0
+    smooth       : float = 0.0  
+    total_epochs: int = 1000  
+
+    def __post_init__(self):
+        
+        return super().__post_init__()
+    
+    def ray_space(self):
+        return self._ray_tune_space
+        
+@BaseModelConfig.register("diffstpp")
+@dataclass
+class DiffSTPPConfig(BaseModelConfig):
+        model_id         : str = "diffstpp"
         
         dim              : int = 2
         cond_dim         : int = 64
         num_types        : int = 1
-        sigma_time   : float = 0.05
-        sigma_loc    : float = 0.05
-        samplingsteps: int = 500
-        n_samples    : int = 100
-        langevin_step: float = 0.005
-        loss_lambda  : float = 0.5
-        loss_lambda2 : float = 1.0
-        smooth       : float = 0.0  
-        total_epochs: int = 1000  
+        samplingsteps    : int = 500
+        n_samples        : int = 100
+
+        total_epochs     : int = 1000 
+        timesteps        : int = 100
+        beta_schedule    : str = "cosine"
+        loss_type        : str = "l2"
+        objective        : str = "pred_noise" 
     
         def __post_init__(self):
             

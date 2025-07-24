@@ -12,8 +12,6 @@ from lightning_stpp.config_factory import (
     Config,
 )
 
-
-
 @dataclass
 class RunnerConfig(Config):
     data     : DataConfig
