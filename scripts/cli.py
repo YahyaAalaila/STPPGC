@@ -30,7 +30,7 @@ def main(cfg: DictConfig):
 
     # Override accelerator in Hydra config
     cfg.trainer.accelerator = device_name
-    
+
     # 1) Build dataclass-based RunnerConfig
     raw = OmegaConf.to_container(cfg, resolve=True)
     runner_cfg = RunnerConfig.from_dict(raw)

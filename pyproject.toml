@@ -13,6 +13,7 @@ version         = "0.0.1"
 license = { file = "LICENSE" }
 description     = "Benchmarks for spatiotemporal point processes"
 readme          = "README.md"
+# Update Python version if tests show compatibility issues (current version noted)
 requires-python = ">=3.11"
 dependencies = [
   "torch==2.6.0",

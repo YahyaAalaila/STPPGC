@@ -108,16 +108,18 @@ We strongly recommend using a virtual environment.
 
 ```bash
 git clone https://github.com/YahyaAalaila/STPPGC.git
-cd STPPGC
+cd STPPGC-main
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 pip install .
 ```
+
 ### 🍎 macOS
 
 Install Homebrew if missing.
 Install Python 3.11+ and virtualenv support:
+
 ```bash
 brew install python@3.11
 python3 -m venv .venv
@@ -125,6 +127,7 @@ source .venv/bin/activate
 ```
 
 Install dependencies:
+
 ```bash
 pip install -r requirements.txt
 pip install .
@@ -132,7 +135,7 @@ pip install .
 
 ### 🪟 Windows (via WSL)
 
-Install WSL and open Ubuntu.
+Install WSL2 and open Ubuntu.
 Download & extract the repo:
 
 ```bash
@@ -167,7 +170,6 @@ requires-python = ">=3.11"
 Below is a high-level overview of how our configuration-factory drives the construction 
 of data, model, trainer, logging and HPO components, and how the runner ties them all 
 together into a PyTorch Lightning experiment.
-
 
 ### One object - Many specialised subobjects
 All configs inherit from `Config` (`_config.py`), which give the following
@@ -392,6 +394,7 @@ We ship a ready-to-go copy of `ray_config.yaml` in `examples/configs/`
 |Single quick trial| `python scripts/cli.py --config ray_config.yaml hpo.num_trials=1`|
 
 ### 4 · Script Example
+
 ``` bash 
 from lightning_stpp.utils.load_config import load_and_finalize
 import torch
@@ -418,6 +421,7 @@ if __name__ == "__main__":
     import sys
     main(sys.argv[1])
 ```
+
 ``` bash 
 > `python examples/runner.py examples/configs/ray_config.yaml data.dataset_id=PinwheelHawkes`  
 > (or whatever override string you prefer).
