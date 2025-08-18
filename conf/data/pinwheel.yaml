@@ -1,0 +1,14 @@
+dataset_id: PinwheelHawkes
+batch_size: 128
+max_events: 1024
+
+train_bsz:   16
+val_bsz:     64
+test_bsz:    64
+ddim: 2
+num_workers: 7 #13
+shuffle:     true
+drop_last:   true
+pin_memory:  true
+seed:        42
+log_normalisation: 1

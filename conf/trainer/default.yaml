@@ -1,0 +1,14 @@
+gpus:         1
+accelerator: "cpu" #"gpu" #"mps"
+max_epochs:   1
+precision:    32
+seed:         123
+ckpt_dir:     "./checkpoints/PinwheelHawkesSweep"
+save_top_k:   1
+monitor:      "val_loss"
+resume_from:  null
+
+extra_callbacks:
+  - class_path: callbacks.common.test_scheduler.TestSchedulerCallback
+    init_args:
+      test_every_n_epochs: 5 
