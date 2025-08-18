@@ -379,19 +379,19 @@ pip install -e .[neural]
 
 ### 2 · Run with full YAML file
 ``` bash
-python scripts/cli.py --config examples/configs/ray_config.yaml
+python scripts/cli.py 
 ```
-We ship a ready-to-go copy of `ray_config.yaml` in `examples/configs/`
+We ship a ready-to-go copy of `config.yaml` in `./conf`
 
 ### 3 · Override only what matters
 
 | What you want to change| Example command |
 |-----|-----|
-|Different dataset| `python scripts/cli.py --config ray_config.yaml data.dataset_id=M4Earthquake`|
-|Batch size| `python scripts/cli.py --config ray_config.yaml data.batch_size=64`|
-|Learning-rate sweep| `python scripts/cli.py --config ray_config.yaml model.search_space.lr='{loguniform:[1e-6,1e-3]}'`|
-|CPU-only run| `python scripts/cli.py --config ray_config.yaml trainer.gpus=0 trainer.accelerator=cpu`|
-|Single quick trial| `python scripts/cli.py --config ray_config.yaml hpo.num_trials=1`|
+|Different dataset| `python3 scripts/cli.py --config-name config.yaml data.dataset_id=M4Earthquake`|
+|Batch size| `python3 scripts/cli.py --config-name config.yaml data.batch_size=64`|
+|Learning-rate sweep| `python3 scripts/cli.py --config-name config.yaml model.search_space.lr='{loguniform:[1e-6,1e-3]}'`|
+|CPU-only run| `python3 scripts/cli.py --config-name config.yaml trainer.gpus=0 trainer.accelerator=cpu`|
+|Single quick trial| `python3 scripts/cli.py --config-name config.yaml hpo.num_trials=1`|
 
 ### 4 · Script Example
 
