@@ -421,7 +421,6 @@ if __name__ == "__main__":
     import sys
     main(sys.argv[1])
 ```
-
 ``` bash 
 > `python examples/runner.py examples/configs/ray_config.yaml data.dataset_id=PinwheelHawkes`  
 > (or whatever override string you prefer).

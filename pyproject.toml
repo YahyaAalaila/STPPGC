@@ -38,6 +38,3 @@ package-dir = {"" = "src"}     #  New
 [tool.setuptools.packages.find]
 where   = ["src"]
 include = ["lightning_stpp", "lightning_stpp.*"]
-
-
-
