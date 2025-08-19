@@ -146,7 +146,7 @@ unzip main.zip && cd STPPGC-main
 Create a virtual environment (install python3-venv if missing):
 
 ```bash
-bashpython3 -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 ```
 
