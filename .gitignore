@@ -200,3 +200,6 @@ archive/
 outputs/
 quick_starter/
 ray_results/
+
+.vscode/
+uv.lock

@@ -111,8 +111,7 @@ git clone https://github.com/YahyaAalaila/STPPGC.git
 cd STPPGC-main
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
-pip install .
+pip install -e .
 ```
 
 ### 🍎 macOS
@@ -124,13 +123,7 @@ Install Python 3.11+ and virtualenv support:
 brew install python@3.11
 python3 -m venv .venv
 source .venv/bin/activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-pip install .
+pip install -e .
 ```
 
 ### 🪟 Windows (via WSL)
@@ -146,21 +139,9 @@ unzip main.zip && cd STPPGC-main
 Create a virtual environment (install python3-venv if missing):
 
 ```bash
-bashpython3 -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
-```
-
-(Optional but recommended) Install uv:
-
-```bash
-pip install uv
-uv pip install -r requirements.txt
-```
-
-If Python <3.11 → update pyproject.toml:
-
-``` bash
-requires-python = ">=3.11"
+pip install -e .
 ```
 
 ---

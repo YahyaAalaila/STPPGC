@@ -6,7 +6,7 @@ train_bsz:   16
 val_bsz:     64
 test_bsz:    64
 ddim: 2
-num_workers: 7 #13
+num_workers: 13
 shuffle:     true
 drop_last:   true
 pin_memory:  true
