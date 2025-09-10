@@ -24,12 +24,13 @@ class Runner(BaseRunner):
 
     def _init_model(self):
         # Initialize the model based on the configuration
-        model_cfg = self.config.model 
+        model_cfg = self.config.model
         stpp_class = BaseSTPPModule.by_name(model_cfg.model_id)
         self.model = stpp_class(self.config.model, self.config.data)
         # Initialize the corresponding datamodule
         self.datamodule = LightDataModule.build_datamodule_from_config(self.config)
-        
+
+
     def fit(self):
         # Implement the logic for fitting the model
         self.logger.info("Starting training...")

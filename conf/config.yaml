@@ -1,6 +1,6 @@
 defaults:
   - data:    pinwheel
-  - model:   neuralstpp
+  - model:   autostpp #smash #diffstpp #deepstpp #neuralstpp
   - trainer: default
   - logging: default
   - hpo:     default

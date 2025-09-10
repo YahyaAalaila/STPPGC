@@ -13,7 +13,7 @@ version         = "0.0.1"
 license = { file = "LICENSE" }
 description     = "Benchmarks for spatiotemporal point processes"
 readme          = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 dependencies = [
   "torch==2.6.0",
   "lightning==2.2.0",
@@ -29,7 +29,8 @@ dependencies = [
   "neural_stpp @ git+https://github.com/YahyaAalaila/neural_stpp.git@main#egg=neural_stpp",
   "deepstpp @ git+https://github.com/YahyaAalaila/DeepSTPP.git@master#egg=deepstpp",
   "smash @ git+https://github.com/YahyaAalaila/SMASH.git@main#egg=smash",
-  "diffstpp @ git+https://github.com/YahyaAalaila/DiffSTPP.git@main#egg=diffstpp"
+  "diffstpp @ git+https://github.com/YahyaAalaila/DiffSTPP.git@main#egg=diffstpp",
+  "autoint-stpp @ git+https://github.com/IsmailDr13f/AutoSTPP.git@Update_imports#egg=autoint-stpp"
 ]
 [tool.setuptools]              #  New
 package-dir = {"" = "src"}     #  New
@@ -37,6 +38,3 @@ package-dir = {"" = "src"}     #  New
 [tool.setuptools.packages.find]
 where   = ["src"]
 include = ["lightning_stpp", "lightning_stpp.*"]
-
-
-

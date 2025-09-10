@@ -1,4 +1,3 @@
-# src/adapters/deep_stpp_adapter.py
 from __future__ import annotations
 from typing import Any, Tuple
 

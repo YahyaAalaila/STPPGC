@@ -97,68 +97,6 @@ Global Health Network (MLGH)](https://mlgh.net/), London, UK.
 - **Reproducible** – deterministic seeds, versioned configs, MLflow tracking.
 
 > *“One config → many runs, fully reproducible, effortlessly parallel.”*
----
-## 🔧 Installation <a name="installation"></a> [[Back&nbsp;to&nbsp;Top](#top)]
-
-BenchSTPP can be installed and run on **Linux**, **macOS**, and **Windows (via WSL)**.  
-We strongly recommend using a virtual environment.
-
----
-### 🐧 Linux
-
-```bash
-git clone https://github.com/YahyaAalaila/STPPGC.git
-cd STPPGC
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-pip install .
-```
-### 🍎 macOS
-
-Install Homebrew if missing.
-Install Python 3.11+ and virtualenv support:
-```bash
-brew install python@3.11
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-Install dependencies:
-```bash
-pip install -r requirements.txt
-pip install .
-```
-
-### 🪟 Windows (via WSL)
-
-Install WSL and open Ubuntu.
-Download & extract the repo:
-
-```bash
-wget https://github.com/YahyaAalaila/STPPGC/archive/refs/heads/main.zip
-unzip main.zip && cd STPPGC-main
-```
-
-Create a virtual environment (install python3-venv if missing):
-
-```bash
-bashpython3 -m venv .venv
-source .venv/bin/activate
-```
-
-(Optional but recommended) Install uv:
-
-```bash
-pip install uv
-uv pip install -r requirements.txt
-```
-
-If Python <3.11 → update pyproject.toml:
-
-``` bash
-requires-python = ">=3.11"
-```
 
 ---
 
@@ -364,8 +302,7 @@ Clone locally and run:
 ### 1 · Install from source
 
 ```bash
-pip install -r requirements.txt
-pip install .
+pip install -e .
 ```
 
 To enable the optional Neural-STPP models:
@@ -377,7 +314,7 @@ pip install -e .[neural]
 
 ### 2 · Run with full YAML file
 ``` bash
-python scripts/cli.py --config examples/configs/ray_config.yaml
+python3 scripts/cli.py --config-name config.yaml
 ```
 We ship a ready-to-go copy of `ray_config.yaml` in `examples/configs/`
 
@@ -385,11 +322,11 @@ We ship a ready-to-go copy of `ray_config.yaml` in `examples/configs/`
 
 | What you want to change| Example command |
 |-----|-----|
-|Different dataset| `python scripts/cli.py --config ray_config.yaml data.dataset_id=M4Earthquake`|
-|Batch size| `python scripts/cli.py --config ray_config.yaml data.batch_size=64`|
-|Learning-rate sweep| `python scripts/cli.py --config ray_config.yaml model.search_space.lr='{loguniform:[1e-6,1e-3]}'`|
-|CPU-only run| `python scripts/cli.py --config ray_config.yaml trainer.gpus=0 trainer.accelerator=cpu`|
-|Single quick trial| `python scripts/cli.py --config ray_config.yaml hpo.num_trials=1`|
+|Different dataset| `python3 scripts/cli.py --config-name config.yaml data.dataset_id=M4Earthquake`|
+|Batch size| `python3 scripts/cli.py --config-name config.yaml data.batch_size=64`|
+|Learning-rate sweep| `python3 scripts/cli.py --config-name config.yaml model.search_space.lr='{loguniform:[1e-6,1e-3]}'`|
+|CPU-only run| `python3 scripts/cli.py --config-name config.yaml trainer.gpus=0 trainer.accelerator=cpu`|
+|Single quick trial| `python3 scripts/cli.py --config-name config.yaml hpo.num_trials=1`|
 
 ### 4 · Script Example
 ``` bash 
@@ -441,5 +378,6 @@ projects:
 - [EasyTPP](https://github.com/ant-research/EasyTemporalPointProcess?tab=readme-ov-file)  
 - [NeuralSTPP](https://github.com/facebookresearch/neural_stpp)  
 - [DeepSTPP](https://github.com/Rose-STL-Lab/DeepSTPP)  
+- [AutoSTPP](https://github.com/Rose-STL-Lab/AutoSTPP.git)
 
 > *If we missed your work, please open an issue or PR and we’ll gladly add it!*
