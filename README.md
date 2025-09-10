@@ -298,6 +298,21 @@ A new synthetic data generator and additional real-world datasets will be added 
 <!-- ## Getting Started [Back to Top](#top) -->
 ## Getting Started&nbsp;<a name="quick-start"></a> [[Back&nbsp;to&nbsp;Top](#top)]
 Clone locally and run:
+### 0 · Create a virtual environment (recommended)
+
+It's recommended to use a virtual environment to avoid dependency conflicts:
+
+```bash
+# Create a virtual environment named .venv
+python3 -m venv .venv
+
+# Activate the virtual environment
+# On WSL, Linux & macOS:
+source .venv/bin/activate
+```
+> **Note for Windows users:**  
+> It is recommended to use **WSL 2** (Windows Subsystem for Linux) for a smoother experience, as some dependencies and commands may not work properly on native Windows.
+
 
 ### 1 · Install from source
 
