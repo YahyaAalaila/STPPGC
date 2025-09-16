@@ -12,7 +12,11 @@ class NeuralSTPP(BaseSTPPModule):
         self.t0 = model_cfg.t0
         self.t1 = model_cfg.t1
         self.net = model_cfg.build_model()
+        
+        # Ensure the entire model is float32
         self.float()
+        # Also ensure the net specifically is float32 in case it was built separately
+        self.net.float()
                 
         # Split parameters for possible different treatment.
         self.regular_params, self.attn_params = [], []
@@ -20,10 +24,18 @@ class NeuralSTPP(BaseSTPPModule):
             (self.attn_params if "self_attns" in n else self.regular_params).append(p)
         
     def forward(self, event_times, spatial_locations, input_mask):
+        # Ensure input tensors are float32 to match model parameters
+        event_times = event_times.float()
+        spatial_locations = spatial_locations.float() 
+        input_mask = input_mask.float()
+        
+        # Convert t0 and t1 to match input dtype if they're tensors
+        t0 = self.t0.float() if isinstance(self.t0, torch.Tensor) else self.t0
+        t1 = self.t1.float() if isinstance(self.t1, torch.Tensor) else self.t1
 
         space_ll, time_ll = self.net(
             event_times, spatial_locations, input_mask,
-            self.t0, self.t1
+            t0, t1
         )
         # normalise by number of events
         num_events = input_mask.sum(dim=1, keepdim=True).clamp_min(1)
@@ -44,6 +56,7 @@ class NeuralSTPP(BaseSTPPModule):
         self.log("train_time_ll", time_ll.mean(), on_step=True, on_epoch=True)
         self.log("train_loss", loss.mean(), on_step=True, on_epoch=True)
         return loss
+        
     def validation_step(self, batch, batch_idx):
         event_times, spatial_locations, input_mask = batch
         space_ll, time_ll = self(event_times, spatial_locations, input_mask)
@@ -59,6 +72,7 @@ class NeuralSTPP(BaseSTPPModule):
         self.log("val_time_ll", time_ll.mean(), on_step=True, on_epoch=True)
         self.log("val_loss", loss.mean(), on_step=False, on_epoch=True, prog_bar=True)
         return loss
+        
     def configure_optimizers(self):
         
         N = len(self.trainer.datamodule.training_set)
@@ -114,4 +128,3 @@ class NeuralSTPP(BaseSTPPModule):
         # Only the callbacks that are specific to the model should be defined here.
         from lightning_stpp.callbacks.neural_stpp.ema import EMACallback
         return [EMACallback()]  # TODO: Add any other callbacks you need here.
-        

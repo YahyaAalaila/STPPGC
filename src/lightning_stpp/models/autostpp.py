@@ -3,7 +3,6 @@ from lightning_stpp.config_factory import Config, DataConfig
 from .base import BaseSTPPModule
 import torch
 
-
 @BaseSTPPModule.register("autostpp")
 class AutoSTPP(BaseSTPPModule):
     def __init__(self, model_cfg: Config, data_cfg: DataConfig):
