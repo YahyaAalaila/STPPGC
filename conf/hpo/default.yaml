@@ -3,5 +3,6 @@ num_trials:      1
 scheduler:       "asha"
 resources:
   cpu: 1
+  gpu: 1
 results_dir:     "./ray_results/PinwheelHawkesSweep"
 experiment_name: "PinwheelHawkes_neural_sweep"

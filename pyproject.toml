@@ -14,6 +14,7 @@ license = { file = "LICENSE" }
 description     = "Benchmarks for spatiotemporal point processes"
 readme          = "README.md"
 requires-python = ">=3.9"
+
 dependencies = [
   "torch==2.6.0",
   "lightning==2.2.0",
@@ -37,4 +38,5 @@ package-dir = {"" = "src"}     #  New
 
 [tool.setuptools.packages.find]
 where   = ["src"]
+
 include = ["lightning_stpp", "lightning_stpp.*"]

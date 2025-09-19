@@ -106,7 +106,6 @@ Below is a high-level overview of how our configuration-factory drives the const
 of data, model, trainer, logging and HPO components, and how the runner ties them all 
 together into a PyTorch Lightning experiment.
 
-
 ### One object - Many specialised subobjects
 All configs inherit from `Config` (`_config.py`), which give the following
 
@@ -331,7 +330,7 @@ pip install -e .[neural]
 ``` bash
 python3 scripts/cli.py --config-name config.yaml
 ```
-We ship a ready-to-go copy of `ray_config.yaml` in `examples/configs/`
+We ship a ready-to-go copy of `config.yaml` in `./conf`
 
 ### 3 · Override only what matters
 
@@ -344,6 +343,7 @@ We ship a ready-to-go copy of `ray_config.yaml` in `examples/configs/`
 |Single quick trial| `python3 scripts/cli.py --config-name config.yaml hpo.num_trials=1`|
 
 ### 4 · Script Example
+
 ``` bash 
 from lightning_stpp.utils.load_config import load_and_finalize
 import torch
