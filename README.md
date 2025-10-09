@@ -97,52 +97,6 @@ Global Health Network (MLGH)](https://mlgh.net/), London, UK.
 - **Reproducible** – deterministic seeds, versioned configs, MLflow tracking.
 
 > *“One config → many runs, fully reproducible, effortlessly parallel.”*
----
-## 🔧 Installation <a name="installation"></a> [[Back&nbsp;to&nbsp;Top](#top)]
-
-BenchSTPP can be installed and run on **Linux**, **macOS**, and **Windows (via WSL)**.  
-We strongly recommend using a virtual environment.
-
----
-### 🐧 Linux
-
-```bash
-git clone https://github.com/YahyaAalaila/STPPGC.git
-cd STPPGC-main
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
-```
-
-### 🍎 macOS
-
-Install Homebrew if missing.
-Install Python 3.11+ and virtualenv support:
-
-```bash
-brew install python@3.11
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
-```
-
-### 🪟 Windows (via WSL)
-
-Install WSL2 and open Ubuntu.
-Download & extract the repo:
-
-```bash
-wget https://github.com/YahyaAalaila/STPPGC/archive/refs/heads/main.zip
-unzip main.zip && cd STPPGC-main
-```
-
-Create a virtual environment (install python3-venv if missing):
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
-```
 
 ---
 
@@ -343,12 +297,26 @@ A new synthetic data generator and additional real-world datasets will be added 
 <!-- ## Getting Started [Back to Top](#top) -->
 ## Getting Started&nbsp;<a name="quick-start"></a> [[Back&nbsp;to&nbsp;Top](#top)]
 Clone locally and run:
+### 0 · Create a virtual environment (recommended)
+
+It's recommended to use a virtual environment to avoid dependency conflicts:
+
+```bash
+# Create a virtual environment named .venv
+python3 -m venv .venv
+
+# Activate the virtual environment
+# On WSL, Linux & macOS:
+source .venv/bin/activate
+```
+> **Note for Windows users:**  
+> It is recommended to use **WSL 2** (Windows Subsystem for Linux) for a smoother experience, as some dependencies and commands may not work properly on native Windows.
+
 
 ### 1 · Install from source
 
 ```bash
-pip install -r requirements.txt
-pip install .
+pip install -e .
 ```
 
 To enable the optional Neural-STPP models:
@@ -360,7 +328,7 @@ pip install -e .[neural]
 
 ### 2 · Run with full YAML file
 ``` bash
-python scripts/cli.py 
+python3 scripts/cli.py --config-name config.yaml
 ```
 We ship a ready-to-go copy of `config.yaml` in `./conf`
 
@@ -425,5 +393,6 @@ projects:
 - [EasyTPP](https://github.com/ant-research/EasyTemporalPointProcess?tab=readme-ov-file)  
 - [NeuralSTPP](https://github.com/facebookresearch/neural_stpp)  
 - [DeepSTPP](https://github.com/Rose-STL-Lab/DeepSTPP)  
+- [AutoSTPP](https://github.com/Rose-STL-Lab/AutoSTPP.git)
 
 > *If we missed your work, please open an issue or PR and we’ll gladly add it!*

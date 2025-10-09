@@ -5,6 +5,15 @@ from lightning_stpp.config_factory.runner_config import RunnerConfig
 from lightning_stpp.utils.registrable import Registrable
 from .datasets import STDataset
 from lightning_stpp.utils.data import Float32Wrapper
+from torch.utils.data import DataLoader
+
+def safe_collate(batch):
+    from torch.utils.data.dataloader import default_collate
+    try:
+        return default_collate(batch)
+    except RuntimeError:
+        # Fallback: don’t stack, just return as list
+        return batch
 
 class LightDataModule(pl.LightningDataModule, Registrable):
     def __init__(self, data_config: DataConfig):
@@ -44,14 +53,36 @@ class LightDataModule(pl.LightningDataModule, Registrable):
         """
         Return the training dataloader.
         """
-        pass
+        #pass
+        return DataLoader(
+            self.train_dataset,
+            batch_size=self.data_config.batch_size,
+            shuffle=True,
+            num_workers=min(self.data_config.num_workers, 8),
+            pin_memory=True
+        )
+    
+
     def val_dataloader(self):
         """
         Return the validation dataloader.
-        """ 
-        pass
+        """
+        return DataLoader(
+            self.validation_set,
+            batch_size=self.data_config.batch_size,
+            shuffle=False,
+            num_workers=min(self.data_config.num_workers, 8),
+            pin_memory=True
+        )
+    
     def test_dataloader(self):
         """
         Return the test dataloader.
-        """ 
-        pass
+        """
+        return DataLoader(
+            self.testing_set,
+            batch_size=self.data_config.batch_size,
+            shuffle=False,
+            num_workers=min(self.data_config.num_workers, 8),
+            pin_memory=True
+        )
