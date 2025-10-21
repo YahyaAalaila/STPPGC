@@ -2,14 +2,15 @@ from autoint_stpp.models.lightning.autoint_stpp import AutoIntSTPointProcess
 from lightning_stpp.config_factory import Config, DataConfig
 from .base import BaseSTPPModule
 import torch
+from dataclasses import asdict
+
 
 @BaseSTPPModule.register("autostpp")
 class AutoSTPP(BaseSTPPModule):
     def __init__(self, model_cfg: Config, data_cfg: DataConfig):
         super().__init__(model_cfg, data_cfg)
-        #self.stpp = AutoIntSTPointProcess(**model_cfg.to_dict())
-        cfg_dict = {k: v for k, v in model_cfg.to_dict().items() if k in ['n_prodnet','hidden_size','num_layers','activation','learning_rate','step_size','gamma','nsteps','round_time','trunc','vis_type','start_idx','name']}
-        self.stpp = AutoIntSTPointProcess(**cfg_dict)
+        self.model_cfg = model_cfg
+        self.stpp = AutoIntSTPointProcess(self.model_cfg)
 
 
     def forward(self, batch):
@@ -35,7 +36,7 @@ class AutoSTPP(BaseSTPPModule):
 
     def configure_optimizers(self):
         cfg = self.model_cfg
-        opt = torch.optim.Adam(self.parameters(), lr=cfg.learning_rate)
+        opt = torch.optim.Adam(self.parameters(), lr=cfg.lr)
         if getattr(cfg, "scheduler", None) is not None:
             sched = torch.optim.lr_scheduler.StepLR(opt, step_size=cfg.step_size, gamma=cfg.gamma)
             return {"optimizer": opt, "lr_scheduler": sched}
