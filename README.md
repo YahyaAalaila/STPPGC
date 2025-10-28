@@ -106,7 +106,6 @@ Below is a high-level overview of how our configuration-factory drives the const
 of data, model, trainer, logging and HPO components, and how the runner ties them all 
 together into a PyTorch Lightning experiment.
 
-
 ### One object - Many specialised subobjects
 All configs inherit from `Config` (`_config.py`), which give the following
 
@@ -298,12 +297,26 @@ A new synthetic data generator and additional real-world datasets will be added 
 <!-- ## Getting Started [Back to Top](#top) -->
 ## Getting Started&nbsp;<a name="quick-start"></a> [[Back&nbsp;to&nbsp;Top](#top)]
 Clone locally and run:
+### 0 · Create a virtual environment (recommended)
+
+It's recommended to use a virtual environment to avoid dependency conflicts:
+
+```bash
+# Create a virtual environment named .venv
+python3 -m venv .venv
+
+# Activate the virtual environment
+# On WSL, Linux & macOS:
+source .venv/bin/activate
+```
+> **Note for Windows users:**  
+> It is recommended to use **WSL 2** (Windows Subsystem for Linux) for a smoother experience, as some dependencies and commands may not work properly on native Windows.
+
 
 ### 1 · Install from source
 
 ```bash
-pip install -r requirements.txt
-pip install .
+pip install -e .
 ```
 
 To enable the optional Neural-STPP models:
@@ -315,22 +328,22 @@ pip install -e .[neural]
 
 ### 2 · Run with full YAML file
 ``` bash
-benchstpp train \
-  --config examples/configs/ray_config.yaml
+python3 scripts/cli.py --config-name config.yaml
 ```
-We ship a ready-to-go copy of `ray_config.yaml` in `examples/configs/`
+We ship a ready-to-go copy of `config.yaml` in `./conf`
 
 ### 3 · Override only what matters
 
 | What you want to change| Example command |
 |-----|-----|
-|Different dataset| `benchstpp train --config ray_config.yaml data.dataset_id=M4Earthquake`|
-|Batch size| `benchstpp train --config ray_config.yaml data.batch_size=64`|
-|Learning-rate sweep| `benchstpp train --config ray_config.yaml model.search_space.lr='{loguniform:[1e-6,1e-3]}'`|
-|CPU-only run| `benchstpp train --config ray_config.yaml trainer.gpus=0 trainer.accelerator=cpu`|
-|Single quick trial| `benchstpp train --config ray_config.yaml hpo.num_trials=1`|
+|Different dataset| `python3 scripts/cli.py --config-name config.yaml data.dataset_id=M4Earthquake`|
+|Batch size| `python3 scripts/cli.py --config-name config.yaml data.batch_size=64`|
+|Learning-rate sweep| `python3 scripts/cli.py --config-name config.yaml model.search_space.lr='{loguniform:[1e-6,1e-3]}'`|
+|CPU-only run| `python3 scripts/cli.py --config-name config.yaml trainer.gpus=0 trainer.accelerator=cpu`|
+|Single quick trial| `python3 scripts/cli.py --config-name config.yaml hpo.num_trials=1`|
 
 ### 4 · Script Example
+
 ``` bash 
 from lightning_stpp.utils.load_config import load_and_finalize
 import torch
@@ -380,5 +393,6 @@ projects:
 - [EasyTPP](https://github.com/ant-research/EasyTemporalPointProcess?tab=readme-ov-file)  
 - [NeuralSTPP](https://github.com/facebookresearch/neural_stpp)  
 - [DeepSTPP](https://github.com/Rose-STL-Lab/DeepSTPP)  
+- [AutoSTPP](https://github.com/Rose-STL-Lab/AutoSTPP.git)
 
 > *If we missed your work, please open an issue or PR and we’ll gladly add it!*

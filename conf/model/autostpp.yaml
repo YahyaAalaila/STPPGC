@@ -1,0 +1,26 @@
+# conf/model/autostpp.yaml
+defaults:
+  - /data: pinwheel   # or your dataset fragment
+  - _self_
+
+model_id: "autostpp"
+monitor: "val/nll"
+monitor_mode: "min"
+
+search_space:
+  # ——————————————— AutoSTPP hyperparameters ———————————————
+  n_prodnet:     5 #10
+  hidden_size:   64 #128
+  num_layers:    1 #2
+  activation:    tanh
+  lr: 0.0004
+  step_size:     20
+  gamma:         0.5
+  nsteps:        [10, 10, 10]
+  round_time:    true
+  trunc:         true
+  vis_type:      ['static']
+  start_idx:     [0, 2]
+  name:          pinwheel #covid_nj_cases
+
+  

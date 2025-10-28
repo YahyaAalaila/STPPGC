@@ -225,3 +225,40 @@ class DiffSTPPConfig(BaseModelConfig):
         def ray_space(self):
             return self._ray_tune_space
 
+
+@BaseModelConfig.register("autostpp")
+@dataclass
+class AutoSTPPConfig(BaseModelConfig):
+    model_id: str = "autostpp"
+
+    # ----- AutoIntSTPP specific params -----
+    n_prodnet: int = 10
+    hidden_size: int = 128
+    num_layers: int = 2
+    activation: str = "tanh"
+    learning_rate: float = 0.004
+    step_size: int = 20
+    gamma: float = 0.5
+    nsteps: list[int] = None
+    round_time: bool = True
+    trunc: bool = True
+    vis_type: list[str] = None  # ['interactive', 'static']
+    start_idx: list[int] = None
+    nsteps: list[int] = None
+    name: str = "pinwheel"  # "covid_nj_cases"
+
+    # ----- optimizer params (BaseModelConfig already defines lr, opt, etc.) -----
+
+    def __post_init__(self):
+        # Default list values need to be initialized here to avoid mutable defaults
+        if self.vis_type is None:
+            self.vis_type = ["interactive", "static"]
+        if self.start_idx is None:
+            self.start_idx = [0, 2]
+        if self.nsteps is None:
+            self.nsteps = [21, 21, 21]
+        super().__post_init__()
+
+    def ray_space(self):
+        # Define any hyperparameter tuning space for Ray Tune here
+        return self._ray_tune_space

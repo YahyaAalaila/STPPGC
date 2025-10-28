@@ -1,5 +1,5 @@
 dataset_id: PinwheelHawkes
-batch_size: 128
+batch_size: 64 # 128
 max_events: 1024
 
 train_bsz:   16

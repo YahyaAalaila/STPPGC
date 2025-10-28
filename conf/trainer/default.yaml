@@ -1,5 +1,5 @@
 gpus:         1
-accelerator: "mps"
+accelerator: "cpu" #"mps"
 max_epochs:   1
 precision:    32
 seed:         123
